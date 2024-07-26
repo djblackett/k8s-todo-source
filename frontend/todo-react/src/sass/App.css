@@ -1,0 +1,556 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
+.list-item-dark-active {
+  background-color: #25273c !important;
+  border-bottom: 2px solid #393a4c;
+  color: #cacde8;
+  text-decoration: initial;
+}
+
+.list-item-dark-complete {
+  background-color: #25273c !important;
+  border-bottom: 2px solid #393a4c;
+  color: #4d5066;
+  text-decoration: line-through;
+}
+
+.list-item-light-active {
+  background-color: #fafafa !important;
+  border-bottom: 2px solid #d2d3db;
+  color: #484b6a;
+  text-decoration: initial;
+}
+
+.list-item-light-complete {
+  background-color: #fafafa !important;
+  border-bottom: 2px solid #d2d3db;
+  color: #9394a5;
+  text-decoration: line-through;
+}
+
+#list-item:last {
+  border-bottom: none;
+}
+
+#list-item {
+  z-index: 4;
+  height: 45px;
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 0;
+  -webkit-filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 0.5));
+          filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 0.5));
+}
+
+#list-item:hover #crossIcon {
+  visibility: visible;
+  pointer-events: initial;
+}
+
+#list-item #outer-circle {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#57ddff), to(#c058f3));
+  background-image: linear-gradient(#57ddff, #c058f3);
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  z-index: 5;
+}
+
+#list-item #outer-circle:focus {
+  border: 2px solid red;
+}
+
+#list-item #outer-circle #circle {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: calc($circleDiameter - 1px);
+  width: calc($circleDiameter - 1px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  z-index: 6;
+  pointer-events: none;
+}
+
+#list-item #outer-circle #circle .check-hidden {
+  visibility: hidden;
+}
+
+#list-item #outer-circle #circle .check-visible {
+  visibility: visible;
+}
+
+#list-item #outer-circle #circle #check {
+  pointer-events: none;
+}
+
+#list-item #outer-circle #circle:hover {
+  cursor: pointer;
+}
+
+#list-item #list-item-text {
+  width: 80%;
+}
+
+@media (max-width: 700px) {
+  #list-item #list-item-text {
+    font-size: 14px;
+  }
+}
+
+#list-item #crossIcon {
+  width: 6%;
+  justify-self: flex-end;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#list-item #crossIcon:focus {
+  border: 2px solid black;
+}
+
+.input-component-light {
+  background-color: #fafafa;
+}
+
+.input-component-light:focus {
+  border: 2px solid black;
+}
+
+.input-component-dark {
+  background-color: #25273c;
+}
+
+.input-component-dark:focus {
+  border: 2px solid white;
+}
+
+#input-component {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  z-index: 1;
+  height: 45px;
+  width: calc(50% + 20px);
+  margin-bottom: 20px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+          box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 10px 0;
+  outline: 0 !important;
+}
+
+@media (max-width: 700px) {
+  #input-component {
+    width: 90%;
+  }
+}
+
+#input-component #outer-circle {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#57ddff), to(#c058f3));
+  background-image: linear-gradient(#57ddff, #c058f3);
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  z-index: 5;
+  margin-left: 10px;
+}
+
+#input-component #outer-circle #circle {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: calc($circleDiameter - 1px);
+  width: calc($circleDiameter - 1px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  z-index: 6;
+  pointer-events: none;
+}
+
+#input-component .input-dark {
+  background-color: #25273c;
+  color: #cacde8;
+}
+
+#input-component .input-light {
+  background-color: #fafafa;
+  color: #484b6a;
+}
+
+#input-component #input {
+  height: 45px;
+  width: 90%;
+  font-size: 1rem;
+  outline: none;
+  border: none;
+  margin-left: 1em;
+  font-weight: bold;
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  #input-component #input {
+    font-size: 14px;
+  }
+}
+
+.list-info-dark {
+  background-color: #25273c;
+  color: #4d5066;
+}
+
+.list-info-light {
+  background-color: #fafafa;
+  color: #484b6a;
+}
+
+#list-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  width: 100%;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  font-size: 1rem;
+  border-radius: 0 0 5px 5px;
+  min-height: 44px;
+  z-index: 5;
+}
+
+@media (max-width: 700px) {
+  #list-info {
+    margin-top: 20px;
+    height: 35px;
+    font-size: 14px;
+    border-radius: 5px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  }
+}
+
+@media (max-width: 400px) {
+  #list-info {
+    font-size: 12px;
+  }
+}
+
+#list-info #completion-status {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#list-info #completion-status .list-option {
+  margin: 10px;
+}
+
+#list-info #completion-status .list-option:hover {
+  cursor: pointer;
+}
+
+#list-info #completion-status .list-option-selected {
+  color: #3a7bfd !important;
+}
+
+#list-info #completion-status .list-option-unselected-dark {
+  color: #4d5066;
+}
+
+#list-info #completion-status .list-option-unselected-dark:hover {
+  color: #e4e5f1 !important;
+}
+
+#list-info #completion-status .list-option-unselected-light {
+  color: #9394a5;
+}
+
+#list-info #completion-status .list-option-unselected-light:hover {
+  color: #484b6a;
+}
+
+#list-info .clear-button-dark {
+  color: #4d5066;
+}
+
+#list-info .clear-button-dark:hover {
+  color: #e4e5f1;
+}
+
+#list-info .clear-button-light {
+  color: #9394a5;
+}
+
+#list-info .clear-button-light:hover {
+  color: #484b6a !important;
+}
+
+#list-info #clear-button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+#list-info #clear-button:hover {
+  cursor: pointer;
+}
+
+::focus {
+  outline-color: green;
+}
+
+html {
+  font-size: 18px;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+body {
+  background-color: #161722;
+  height: 100%;
+  width: 100vw;
+}
+
+body .App {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100vw;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+body .App .background-img-dark {
+  background-image: url("../../public/images/bg-desktop-dark.jpg");
+}
+
+body .App .background-img-light {
+  background-image: url("../../public/images/bg-desktop-light.jpg");
+}
+
+body .App #background-img {
+  position: absolute;
+  background-size: 100% 100%;
+  background-position: top;
+  background-repeat: no-repeat;
+  height: 300px;
+  width: 100%;
+  z-index: 0;
+}
+
+body .App header {
+  width: calc(50% + 20px);
+  margin-top: 30px;
+  font-size: 2rem;
+  z-index: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: white;
+}
+
+body .App header h1 {
+  -webkit-filter: drop-shadow(0.35rem 0.35rem 0.4rem black);
+          filter: drop-shadow(0.35rem 0.35rem 0.4rem black);
+}
+
+@media (max-width: 700px) {
+  body .App header {
+    width: 75%;
+  }
+}
+
+body .App header #svgContainer {
+  height: 26px;
+  width: 26px;
+  cursor: pointer;
+}
+
+body .App header #svgContainer svg {
+  pointer-events: none;
+  -webkit-filter: drop-shadow(0.35rem 0.35rem 0.4rem black);
+          filter: drop-shadow(0.35rem 0.35rem 0.4rem black);
+}
+
+body .App header #svgContainer path {
+  pointer-events: none;
+}
+
+@media (max-width: 400px) {
+  body .App header #svgContainer {
+    margin-left: 10px;
+  }
+}
+
+body .App .circle-dark {
+  background-color: #25273c;
+}
+
+body .App .circle-light {
+  background-color: #fafafa;
+}
+
+body .App .circle-hidden {
+  visibility: hidden;
+}
+
+body .App .circle-visible {
+  visibility: visible;
+}
+
+body .App #todo-list-container {
+  background-color: transparent;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  z-index: 0;
+  width: calc(50% + 20px);
+  border-radius: 5px;
+  overflow: hidden;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+          box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+@media (max-width: 700px) {
+  body .App #todo-list-container {
+    width: 90%;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+  }
+}
+
+body .App #todo-list-container .characters {
+  height: 100%;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+@media (max-width: 700px) {
+  body .App #todo-list-container .characters {
+    border-radius: 5px;
+    overflow: hidden;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  }
+  body .App #todo-list-container .characters li:last-of-type #list-item {
+    border-bottom: none;
+  }
+}
+
+body .App #todo-list-container .characters li {
+  width: 100%;
+}
+
+body .App .drag {
+  text-align: center;
+  color: #4d5066;
+}
+
+body .attribution {
+  color: #4d5066;
+}
+
+body .reset-dark {
+  color: #4d5066;
+  background-color: #25273c;
+}
+
+body .reset-light {
+  color: #9394a5;
+  background-color: #fafafa;
+}
+
+body #reset {
+  border-radius: 16px;
+  margin: 25px;
+  padding: 10px;
+  border: none;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+          box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+/*# sourceMappingURL=App.css.map */

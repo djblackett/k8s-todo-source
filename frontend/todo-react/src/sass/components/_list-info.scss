@@ -1,0 +1,94 @@
+@import "../helpers/variables";
+
+.list-info-dark {
+  background-color: $darkItem;
+  color: $darkModeListColor;
+}
+
+.list-info-light {
+  background-color: $lightItemBackground;
+  color: $lightActiveText;
+}
+
+#list-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  font-size: 1rem;
+  border-radius: 0 0 5px 5px;
+  min-height: 44px;
+  z-index: 5;
+
+  @media (max-width: 700px) {
+    margin-top: 20px;
+    height: 35px;
+    font-size: 14px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+      rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 12px;
+  }
+
+  #completion-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .list-option {
+      margin: 10px;
+      border: none;
+      background-color: transparent;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .list-option-selected {
+      color: $brightBlue !important;
+    }
+
+    .list-option-unselected-dark {
+      color: $darkModeListColor;
+      &:hover {
+        color: $darkModeHover !important;
+      }
+    }
+
+    .list-option-unselected-light {
+      color: $lightListInfo;
+      &:hover {
+        color: $lightActiveText;
+      }
+    }
+  }
+
+  .clear-button-dark {
+    color: $darkModeListColor;
+    &:hover {
+      color: $darkModeHover;
+    }
+  }
+
+  .clear-button-light {
+    color: $lightListInfo;
+    &:hover {
+      color: $lightActiveText !important;
+    }
+  }
+
+  #clear-button {
+    border: none;
+    // outline: none;
+    background-color: transparent;
+    font-family: "Josefin Sans", sans-serif;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

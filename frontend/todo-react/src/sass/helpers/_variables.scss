@@ -1,0 +1,23 @@
+$circleDiameter: 25px;
+$listItemHeight: 45px;
+
+// light mode colors
+$lightItemBackground: hsl(0, 0%, 98%); // very light grey
+$lighAppBackground: hsl(236, 33%, 92%); // VeryLightGrayishBlue
+$lightListItemBorder: hsl(233, 11%, 84%);
+$lightListInfo: hsl(236, 9%, 61%);
+$lightActiveText: hsl(235, 19%, 35%);
+
+// dark mode colors
+$darkModeListColor: hsl(233, 14%, 35%); // veryDarkGrayishBlue
+$darkModeHover: hsl(236, 33%, 92%); // lightGrayishBlue
+
+$darkBackground: hsl(235, 21%, 11%);
+$darkItem: hsl(235, 24%, 19%);
+$darkItemText1: hsl(234, 39%, 85%);
+$lightGrayishBlueHover: hsl(236, 33%, 92%);
+$darkItemText: hsl(234, 11%, 52%);
+$VeryDarkGrayishBlue: hsl(233, 14%, 35%);
+$darkListItemBorder: hsl(237, 14%, 26%);
+
+$brightBlue: hsl(220, 98%, 61%);

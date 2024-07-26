@@ -1,0 +1,199 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
+@import "components/list-item";
+@import "components/input-bar";
+@import "components/list-info";
+@import "helpers/variables";
+
+// ::selection {
+//   color: red;
+//   background-color: red;
+// }
+
+::focus {
+  outline-color: green;
+}
+
+html {
+  font-size: 18px;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+body {
+  background-color: $darkBackground;
+  height: 100%;
+  width: 100vw;
+
+  .App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-family: "Josefin Sans", sans-serif;
+
+    .background-img-dark {
+      background-image: url("../../public/images/bg-desktop-dark.jpg");
+    }
+
+    .background-img-light {
+      background-image: url("../../public/images/bg-desktop-light.jpg");
+    }
+
+    #background-img {
+      position: absolute;
+      background-size: 100% 100%;
+      background-position: top;
+      background-repeat: no-repeat;
+      height: 300px;
+      width: 100%;
+      z-index: 0;
+    }
+
+    header {
+      width: calc(50% + 20px);
+      margin-top: 30px;
+      font-size: 2rem;
+      z-index: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+
+      h1 {
+        filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 1));
+      }
+
+      @media (max-width: 700px) {
+        width: 75%;
+      }
+
+      #svgContainer {
+        height: 26px;
+        width: 26px;
+        cursor: pointer;
+
+        svg {
+          pointer-events: none;
+          filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 1));
+        }
+
+        path {
+          pointer-events: none;
+        }
+
+        @media (max-width: 400px) {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .circle-dark {
+      background-color: $darkItem;
+    }
+
+    .circle-light {
+      background-color: $lightItemBackground;
+    }
+
+    .circle-hidden {
+      visibility: hidden;
+    }
+
+    .circle-visible {
+      visibility: visible;
+    }
+
+    #todo-list-container {
+      background-color: transparent;
+      display: flex;
+      height: auto;
+      flex-direction: column;
+      align-items: center;
+      z-index: 0;
+      width: calc(50% + 20px);
+      border-radius: 5px;
+      overflow: hidden;
+
+      box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+        rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+      @media (max-width: 700px) {
+        width: 90%;
+        box-shadow: none;
+      }
+
+      .characters {
+        height: 100%;
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        background-color: transparent;
+
+        @media (max-width: 700px) {
+          border-radius: 5px;
+          overflow: hidden;
+          box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+            rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+          li {
+            &:last-of-type {
+              #list-item {
+                border-bottom: none;
+              }
+            }
+          }
+        }
+
+        li {
+          width: 100%;
+        }
+      }
+    }
+    .drag {
+      text-align: center;
+      color: $darkModeListColor;
+    }
+  }
+
+  .attribution {
+    color: $darkModeListColor;
+  }
+
+  .reset-dark {
+    color: $darkModeListColor;
+    background-color: $darkItem;
+  }
+
+  .reset-light {
+    color: $lightListInfo;
+    background-color: $lightItemBackground;
+  }
+
+  #reset {
+    border-radius: 16px;
+    margin: 25px;
+    padding: 10px;
+    border: none;
+    // filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 1));
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+      rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  }
+}
+
+#download {
+  max-width: 300px;
+  margin-bottom: 1rem;
+  border: solid black 1px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+
+  //position: absolute;
+  //top: 0;
+  //left: 0;
+}
