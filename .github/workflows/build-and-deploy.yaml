@@ -1,0 +1,160 @@
+name: Build and publish application
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build docker images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # tag image with the GitHub SHA to get a unique tag
+      - name: Build and publish frontend
+        run: |-
+          docker build --tag "djblackett/frontend:${{ github.sha }}" ./frontend
+          docker push "djblackett/frontend:${{ github.sha }}"
+
+      - name: Build and publish backend
+        run: |-
+          docker build --tag "djblackett/backend:${{ github.sha }}" ./backend
+          docker push "djblackett/backend:${{ github.sha }}"
+
+      - name: Build and publish broadcaster
+        run: |-
+          docker build --tag "djblackett/broadcaster:${{ github.sha }}" ./broadcaster
+
+  deploy_to_staging:
+    name: deploy to staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout deployment repository
+        uses: actions/checkout@v4
+        with:
+          repository: djblackett/todo-dep
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          path: deployment
+
+      - name: List files in deployment directory
+        run: ls -R deployment
+
+
+      - name: Display current log-output deployment file
+        run: cat deployment/manifests/log-output-deployment.yaml
+
+      - name: Display current pingpong deployment file
+        run: cat deployment/manifests/ping-pong-deployment.yaml
+
+
+      #   # Figure out how to do this with Kustomize
+      # - name: Update log-output deployment
+      #   run: |
+      #     sed -i "s|image: PROJECT/LOG_IMAGE|image: djblackett/log-output:${{ github.sha }}|" deployment/manifests/log-output-deployment.yaml
+
+      # - name: Update pingpong deployment
+      #   run: |
+      #     sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
+
+      #  Debug
+      # - name: Display updated log-output deployment file
+      #   run: cat deployment/manifests/log-output-deployment.yaml
+
+      # - name: Display updated pingpong deployment file
+      #   run: cat deployment/manifests/ping-pong-deployment.yaml
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+        #  check if event is push, then set namespace to staging
+      - name: Update images in deployment repo
+        run: |-
+          if [ "${{ github.event_name }}" == "push" ]; then
+            kubectl create namespace staging || true
+            kubectl config set-context --current --namespace=staging
+          fi
+
+          kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
+            backend="djblackett/backend:$GITHUB_SHA" \
+            broadcaster="djblackett/broadcaster:$GITHUB_SHA"
+          kustomize build . | kubectl apply -f -
+          # kubectl rollout status deployment todo-go-frontend --timeout 60s
+          # kubectl rollout status deployment todo-go-backend --timeout 60s
+          # kubectl get services -o wide
+
+
+      - name: Commit and push changes
+        env:
+           GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+        run: |
+          cd deployment
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update deployment images to ${{ github.sha }}"
+          git push
+
+  deploy_to_production:
+    name: deploy to production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout deployment repository
+        uses: actions/checkout@v4
+        with:
+          repository: djblackett/todo-dep
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          path: deployment
+
+
+        # Figure out how to do this with Kustomize
+      - name: Update log-output deployment
+        run: |
+          sed -i "s|image: PROJECT/LOG_IMAGE|image: djblackett/log-output:${{ github.sha }}|" deployment/manifests/log-output-deployment.yaml
+
+      - name: Update pingpong deployment
+        run: |
+          sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
+
+      #  Debug
+      # - name: Display updated log-output deployment file
+      #   run: cat deployment/manifests/log-output-deployment.yaml
+
+      # - name: Display updated pingpong deployment file
+      #   run: cat deployment/manifests/ping-pong-deployment.yaml
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+
+      - name: Update images in deployment repo
+        run: |-
+          if [ "${{ github.event_name }}" == "tag" ]; then
+            kubectl create namespace production || true
+            kubectl config set-context --current --namespace=production
+          fi
+
+          kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
+            backend="djblackett/backend:$GITHUB_SHA" \
+            broadcaster="djblackett/broadcaster:$GITHUB_SHA"
+
+          kustomize build ./manifests/base
+
+
+      - name: Commit and push changes
+        env:
+           GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+        run: |
+          cd deployment
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update deployment images to ${{ github.sha }}"
+          git push
