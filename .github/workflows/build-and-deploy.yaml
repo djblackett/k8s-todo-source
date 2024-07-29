@@ -96,15 +96,14 @@ jobs:
       - name: Update images in deployment repo
         run: |-
           if [ "${{ github.event_name }}" == "push" ]; then
-            kubectl create namespace staging || true
+            kubectl create namespace staging
             kubectl config set-context --current --namespace=staging
 
             kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
-            backend="djblackett/backend:$GITHUB_SHA" \
-            broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-            kustomize build ./manifests/base
+              backend="djblackett/backend:$GITHUB_SHA" \
+              broadcaster="djblackett/broadcaster:$GITHUB_SHA"
+            # kustomize build ./manifests/base
           fi
-
 
 
       - name: Commit and push changes
