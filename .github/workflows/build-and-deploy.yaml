@@ -50,10 +50,11 @@ jobs:
 
 
       - name: Display current log-output deployment file
-        run: cat deployment/manifests/log-output-deployment.yaml
+        run: cat base/log-output-deployment.yaml
 
       - name: Display current pingpong deployment file
-        run: cat deployment/manifests/ping-pong-deployment.yaml
+        run: cat base/ping-pong-deployment.yaml
+
 
       #   # Figure out how to do this with Kustomize
       # - name: Update log-output deployment
@@ -64,11 +65,12 @@ jobs:
       #   run: |
       #     sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
 
-      - name: Display updated log-output deployment file
-        run: cat deployment/manifests/log-output-deployment.yaml
+      - name: Display current log-output deployment file for staging
+        run: cat overlays/staging/log-output-deployment.yaml
 
-      - name: Display updated pingpong deployment file
-        run: cat deployment/manifests/ping-pong-deployment.yaml
+      - name: Display current pingpong deployment file for staging
+        run: cat overlays/staging/ping-pong-deployment.yaml
+
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
