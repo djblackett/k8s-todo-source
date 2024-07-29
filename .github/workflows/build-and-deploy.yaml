@@ -96,14 +96,12 @@ jobs:
       - name: Update images in deployment repo
         run: |-
           if [ "${{ github.event_name }}" == "push" ]; then
-            kubectl create namespace staging
-            kubectl config set-context --current --namespace=staging
 
             cd deployment/manifests/overlays/staging
             kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
               backend="djblackett/backend:$GITHUB_SHA" \
               broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-            # kustomize build ./manifests/base
+            kustomize edit set namespace staging
           fi
 
 
@@ -154,15 +152,12 @@ jobs:
       - name: Update images in deployment repo
         run: |-
           if [ "${{ github.event_name }}" == "tag" ]; then
-            kubectl create namespace production || true
-            kubectl config set-context --current --namespace=production
 
             cd deployment/manifests/overlays/production
             kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
             backend="djblackett/backend:$GITHUB_SHA" \
             broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-
-
+            kustomize edit set namespace production
           fi
 
 
