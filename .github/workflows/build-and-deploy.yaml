@@ -99,6 +99,7 @@ jobs:
             kubectl create namespace staging
             kubectl config set-context --current --namespace=staging
 
+            cd deployment/manifests/overlays/staging
             kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
               backend="djblackett/backend:$GITHUB_SHA" \
               broadcaster="djblackett/broadcaster:$GITHUB_SHA"
@@ -156,11 +157,12 @@ jobs:
             kubectl create namespace production || true
             kubectl config set-context --current --namespace=production
 
+            cd deployment/manifests/overlays/production
             kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
             backend="djblackett/backend:$GITHUB_SHA" \
             broadcaster="djblackett/broadcaster:$GITHUB_SHA"
 
-          kustomize build ./manifests/base
+
           fi
 
 
