@@ -41,7 +41,7 @@ jobs:
       - name: Checkout deployment repository
         uses: actions/checkout@v4
         with:
-          repository: djblackett/todo-dep
+          repository: djblackett/k8s-todo-dep
           token: ${{ secrets.PERSONAL_TOKEN }}
           path: deployment
 
@@ -111,19 +111,19 @@ jobs:
       - name: Checkout deployment repository
         uses: actions/checkout@v4
         with:
-          repository: djblackett/todo-dep
+          repository: djblackett/k8s-todo-dep
           token: ${{ secrets.PERSONAL_TOKEN }}
           path: deployment
 
 
         # Figure out how to do this with Kustomize
-      - name: Update log-output deployment
-        run: |
-          sed -i "s|image: PROJECT/LOG_IMAGE|image: djblackett/log-output:${{ github.sha }}|" deployment/manifests/log-output-deployment.yaml
+      # - name: Update log-output deployment
+      #   run: |
+      #     sed -i "s|image: PROJECT/LOG_IMAGE|image: djblackett/log-output:${{ github.sha }}|" deployment/manifests/log-output-deployment.yaml
 
-      - name: Update pingpong deployment
-        run: |
-          sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
+      # - name: Update pingpong deployment
+      #   run: |
+      #     sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
 
       #  Debug
       # - name: Display updated log-output deployment file
