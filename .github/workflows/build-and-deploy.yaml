@@ -36,6 +36,7 @@ jobs:
   deploy_to_staging:
     name: deploy to staging
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Checkout deployment repository
         uses: actions/checkout@v4
@@ -105,6 +106,7 @@ jobs:
   deploy_to_production:
     name: deploy to production
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Checkout deployment repository
         uses: actions/checkout@v4
