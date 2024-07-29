@@ -81,15 +81,13 @@ jobs:
           if [ "${{ github.event_name }}" == "push" ]; then
             kubectl create namespace staging || true
             kubectl config set-context --current --namespace=staging
-          fi
 
-          kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
+            kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
             backend="djblackett/backend:$GITHUB_SHA" \
             broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-          kustomize build . | kubectl apply -f -
-          # kubectl rollout status deployment todo-go-frontend --timeout 60s
-          # kubectl rollout status deployment todo-go-backend --timeout 60s
-          # kubectl get services -o wide
+            kustomize build .
+          fi
+
 
 
       - name: Commit and push changes
@@ -141,13 +139,15 @@ jobs:
           if [ "${{ github.event_name }}" == "tag" ]; then
             kubectl create namespace production || true
             kubectl config set-context --current --namespace=production
-          fi
 
-          kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
+            kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
             backend="djblackett/backend:$GITHUB_SHA" \
             broadcaster="djblackett/broadcaster:$GITHUB_SHA"
 
           kustomize build ./manifests/base
+          fi
+
+
 
 
       - name: Commit and push changes
