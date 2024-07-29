@@ -49,11 +49,15 @@ jobs:
         run: ls -R deployment
 
 
-      - name: Display current log-output deployment file
-        run: cat base/log-output-deployment.yaml
+      - name: Display current frontend deployment file
+        run: cat base/frontend.deployment.yaml
 
-      - name: Display current pingpong deployment file
-        run: cat base/ping-pong-deployment.yaml
+      - name: Display current backend deployment file
+        run: cat base/backend.deployment.yaml
+
+      - name: Display current broadcaster deployment file
+        run: cat base/broadcaster.deployment.yaml
+
 
 
       #   # Figure out how to do this with Kustomize
@@ -65,11 +69,24 @@ jobs:
       #   run: |
       #     sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
 
-      - name: Display current log-output deployment file for staging
-        run: cat overlays/staging/log-output-deployment.yaml
+      - name: Display current frontend deployment file for staging
+        run: cat overlays/staging/frontend.deployment.yaml
 
-      - name: Display current pingpong deployment file for staging
-        run: cat overlays/staging/ping-pong-deployment.yaml
+      - name: Display current backend deployment file for staging
+        run: cat overlays/staging/backend.deployment.yaml
+
+      - name: Display current broadcaster deployment file for staging
+        run: cat overlays/staging/broadcaster.deployment.yaml
+
+
+      - name: Display current frontend deployment file for production
+        run: cat overlays/production/frontend.deployment.yaml
+
+      - name: Display current backend deployment file for production
+        run: cat overlays/production/backend.deployment.yaml
+
+      - name: Display current broadcaster deployment file for production
+        run: cat overlays/production/broadcaster.deployment.yaml
 
 
       - name: Set up Kustomize
