@@ -102,7 +102,7 @@ jobs:
             kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
             backend="djblackett/backend:$GITHUB_SHA" \
             broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-            kustomize build .
+            kustomize build ./manifests/base
           fi
 
 
