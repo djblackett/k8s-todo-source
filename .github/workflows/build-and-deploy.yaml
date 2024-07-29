@@ -56,7 +56,6 @@ jobs:
       - name: Display current pingpong deployment file
         run: cat deployment/manifests/ping-pong-deployment.yaml
 
-
       #   # Figure out how to do this with Kustomize
       # - name: Update log-output deployment
       #   run: |
@@ -66,7 +65,6 @@ jobs:
       #   run: |
       #     sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
 
-       Debug
       - name: Display updated log-output deployment file
         run: cat deployment/manifests/log-output-deployment.yaml
 
