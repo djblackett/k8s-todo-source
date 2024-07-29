@@ -2,6 +2,7 @@ name: Build and publish application
 
 on:
   push:
+    - main
 
 jobs:
   build:
@@ -65,12 +66,12 @@ jobs:
       #   run: |
       #     sed -i "s|image: PROJECT/PING_PONG_IMAGE|image: djblackett/pingpong:${{ github.sha }}|" deployment/manifests/ping-pong-deployment.yaml
 
-      #  Debug
-      # - name: Display updated log-output deployment file
-      #   run: cat deployment/manifests/log-output-deployment.yaml
+       Debug
+      - name: Display updated log-output deployment file
+        run: cat deployment/manifests/log-output-deployment.yaml
 
-      # - name: Display updated pingpong deployment file
-      #   run: cat deployment/manifests/ping-pong-deployment.yaml
+      - name: Display updated pingpong deployment file
+        run: cat deployment/manifests/ping-pong-deployment.yaml
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
