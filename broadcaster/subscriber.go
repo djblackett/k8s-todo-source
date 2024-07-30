@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gtuk/discordwebhook"
-	"github.com/nats-io/nats.go"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gtuk/discordwebhook"
+	"github.com/nats-io/nats.go"
 )
 
 func main() {
@@ -64,8 +65,8 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":8500"
+		port = "8500"
 	}
 
-	r.Run(port)
+	r.Run(":" + port)
 }

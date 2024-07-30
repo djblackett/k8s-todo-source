@@ -2,6 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strconv"
+	"time"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -9,11 +15,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
-	"os"
-	"strconv"
-	"time"
 )
 
 func LoggerMiddleware() gin.HandlerFunc {
@@ -188,10 +189,10 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":8000"
+		port = "8000"
 	}
 
-	r.Run(port)
+	r.Run(":" + port)
 
 }
 
