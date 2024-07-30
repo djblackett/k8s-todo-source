@@ -7,12 +7,10 @@ on:
   release:
     types: [created]
 
-
 jobs:
   build:
     name: Build docker images
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
