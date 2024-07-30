@@ -60,7 +60,7 @@ jobs:
               backend="djblackett/backend:$GITHUB_SHA" \
               broadcaster="djblackett/broadcaster:$GITHUB_SHA"
             kustomize edit set namespace staging
-            kustomize build . -o ../../output/staging.yaml
+            kustomize build .
 
       - name: Update images in deployment repo production
         if: startsWith(github.ref, 'refs/tags/')
@@ -70,7 +70,7 @@ jobs:
             backend="djblackett/backend:$GITHUB_SHA" \
             broadcaster="djblackett/broadcaster:$GITHUB_SHA"
             kustomize edit set namespace production
-            kustomize build . -o ../../output/production.yaml
+            kustomize build .
 
       - name: Commit and push changes
         env:
