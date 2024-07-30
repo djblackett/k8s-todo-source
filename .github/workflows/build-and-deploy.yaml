@@ -62,6 +62,7 @@ jobs:
             kustomize edit set namespace staging
             kustomize build .
 
+
       - name: Update images in deployment repo production
         if: startsWith(github.ref, 'refs/tags/')
         run: |-
