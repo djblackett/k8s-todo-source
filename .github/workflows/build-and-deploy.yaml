@@ -51,7 +51,6 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-
       - name: Update images in deployment repo staging
         if: github.ref == 'refs/heads/main'
         run: |-
