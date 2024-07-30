@@ -24,18 +24,18 @@ jobs:
 
       - name: Build and publish frontend
         run: |-
-          docker build --tag "djblackett/frontend:${{ github.sha }}" ./frontend
-          docker push "djblackett/frontend:${{ github.sha }}"
+          docker build --tag "djblackett/todo-go-frontend:${{ github.sha }}" ./frontend
+          docker push "djblackett/todo-go-frontend:${{ github.sha }}"
 
       - name: Build and publish backend
         run: |-
-          docker build --tag "djblackett/backend:${{ github.sha }}" ./backend
-          docker push "djblackett/backend:${{ github.sha }}"
+          docker build --tag "djblackett/todo-go-backend:${{ github.sha }}" ./backend
+          docker push "djblackett/todo-go-backend:${{ github.sha }}"
 
       - name: Build and publish broadcaster
         run: |-
-          docker build --tag "djblackett/broadcaster:${{ github.sha }}" ./broadcaster
-          docker push "djblackett/broadcaster:${{ github.sha }}"
+          docker build --tag "djblackett/todo-go-broadcaster:${{ github.sha }}" ./broadcaster
+          docker push "djblackett/todo-go-broadcaster:${{ github.sha }}"
 
   update_deployment_repo:
     name: update images in deployment repo
@@ -56,9 +56,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |-
             cd deployment/manifests/overlays/staging
-            kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
-              backend="djblackett/backend:$GITHUB_SHA" \
-              broadcaster="djblackett/broadcaster:$GITHUB_SHA"
+            kustomize edit set image todo-go-frontend="djblackett/frontend:$GITHUB_SHA" \
+              todo-go-backend="djblackett/backend:$GITHUB_SHA" \
+              todo-go-broadcaster="djblackett/broadcaster:$GITHUB_SHA"
             kustomize edit set namespace staging
             kustomize build .
 
@@ -67,9 +67,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |-
             cd deployment/manifests/overlays/production
-            kustomize edit set image frontend="djblackett/frontend:$GITHUB_SHA" \
-            backend="djblackett/backend:$GITHUB_SHA" \
-            broadcaster="djblackett/broadcaster:$GITHUB_SHA"
+            kustomize edit set image todo-go-frontend="djblackett/frontend:$GITHUB_SHA" \
+            todo-go-backend="djblackett/backend:$GITHUB_SHA" \
+            todo-go-broadcaster="djblackett/broadcaster:$GITHUB_SHA"
             kustomize edit set namespace production
             kustomize build .
 
