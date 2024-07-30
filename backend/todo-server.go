@@ -192,7 +192,7 @@ func main() {
 		port = "8000"
 	}
 
-	r.Run(":" + port)
+	r.Run("0.0.0.0:" + port)
 
 }
 
