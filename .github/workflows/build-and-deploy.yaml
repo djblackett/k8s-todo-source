@@ -59,7 +59,6 @@ jobs:
             kustomize edit set image todo-go-frontend="djblackett/frontend:$GITHUB_SHA" \
               todo-go-backend="djblackett/backend:$GITHUB_SHA" \
               todo-go-broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-            kustomize edit set namespace staging
             kustomize build .
 
 
@@ -70,7 +69,6 @@ jobs:
             kustomize edit set image todo-go-frontend="djblackett/frontend:$GITHUB_SHA" \
             todo-go-backend="djblackett/backend:$GITHUB_SHA" \
             todo-go-broadcaster="djblackett/broadcaster:$GITHUB_SHA"
-            kustomize edit set namespace production
             kustomize build .
 
       - name: Commit and push changes
