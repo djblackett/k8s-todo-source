@@ -65,9 +65,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |-
             cd deployment/manifests
-            kustomize edit set image todo-go-frontend="djblackett/frontend:$GITHUB_SHA" \
-            todo-go-backend="djblackett/backend:$GITHUB_SHA" \
-            todo-go-broadcaster="djblackett/broadcaster:$GITHUB_SHA"
+            kustomize edit set image PROJECT/FRONTEND="djblackett/todo-go-frontend:$GITHUB_SHA" \
+              PROJECT/BACKEND="djblackett/todo-go-backend:$GITHUB_SHA" \
+              PROJECT/BROADCASTER="djblackett/todo-go-broadcaster:$GITHUB_SHA"
             kustomize build .
 
       - name: Commit and push changes
