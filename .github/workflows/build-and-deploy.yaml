@@ -55,7 +55,7 @@ jobs:
       - name: Update images in deployment repo staging
         if: github.ref == 'refs/heads/main'
         run: |-
-            cd deployment/manifests
+            cd deployment/manifests/overlays/staging
             kustomize edit set image PROJECT/FRONTEND="djblackett/todo-go-frontend:$GITHUB_SHA" \
               PROJECT/BACKEND="djblackett/todo-go-backend:$GITHUB_SHA" \
               PROJECT/BROADCASTER="djblackett/todo-go-broadcaster:$GITHUB_SHA"
