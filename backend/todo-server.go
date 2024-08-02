@@ -19,6 +19,7 @@ import (
 
 func LoggerMiddleware() gin.HandlerFunc {
 	logger := log.New(os.Stdout, "", log.LstdFlags)
+
 	return func(c *gin.Context) {
 		start := time.Now()
 		c.Next()
@@ -69,7 +70,7 @@ func main() {
 
 	fmt.Println("Successfully connected!")
 
-	r := gin.Default()
+	r := gin.New()
 	//r.Use(LoggerMiddleware())
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
 		SkipPaths: []string{"/healthz"},
@@ -89,7 +90,7 @@ func main() {
 	})
 
 	r.GET("/frontend-check", func(c *gin.Context) {
-		c.String(http.StatusOK, "Ready")
+		c.Status(http.StatusOK)
 	})
 
 	r.GET("/todos", func(c *gin.Context) {
