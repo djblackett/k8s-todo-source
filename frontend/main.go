@@ -38,6 +38,9 @@ func main() {
 	go startTimestampWatcher()
 
 	r := gin.Default()
+	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/healthz"},
+	}))
 
 	http.Handle("/metrics", promhttp.Handler())
 

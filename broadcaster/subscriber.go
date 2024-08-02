@@ -25,6 +25,10 @@ func main() {
 	var url = os.Getenv("WEBHOOK_URL")
 	r := gin.Default()
 
+	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/healthz"},
+	}))
+
 	message := discordwebhook.Message{
 		Username: &username,
 		Content:  &content,
@@ -54,8 +58,6 @@ func main() {
 
 	// For liveness and readiness probes
 	r.GET("/healthz", func(c *gin.Context) {
-		fmt.Println("Checking health")
-
 		if nc != nil && nc.Status() == nats.CONNECTED {
 			c.Status(http.StatusOK)
 		} else {

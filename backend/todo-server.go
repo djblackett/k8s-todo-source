@@ -70,7 +70,10 @@ func main() {
 	fmt.Println("Successfully connected!")
 
 	r := gin.Default()
-	r.Use(LoggerMiddleware())
+	//r.Use(LoggerMiddleware())
+	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/healthz"},
+	}))
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://localhost:8081"},
