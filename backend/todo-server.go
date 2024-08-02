@@ -21,6 +21,12 @@ func LoggerMiddleware() gin.HandlerFunc {
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
 	return func(c *gin.Context) {
+
+		if c.Request.URL.Path == "/healthz" || c.Request.URL.Path == "/frontend-check" {
+			c.Next()
+			return
+		}
+
 		start := time.Now()
 		c.Next()
 
