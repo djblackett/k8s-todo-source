@@ -23,11 +23,7 @@ func main() {
 	var username = "djblackett's bot"
 
 	var url = os.Getenv("WEBHOOK_URL")
-	r := gin.Default()
-
-	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
-		SkipPaths: []string{"/healthz"},
-	}))
+	r := gin.New()
 
 	message := discordwebhook.Message{
 		Username: &username,
