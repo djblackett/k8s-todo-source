@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gtuk/discordwebhook"
@@ -24,9 +25,20 @@ func main() {
 	var natsUrl = os.Getenv("NATS_URL")
 	logger.Printf("NATS URL: %s", natsUrl)
 
-	nc, err := nats.Connect(natsUrl)
+	var nc *nats.Conn
+	var err error
+	maxRetries := 5
+	for i := 0; i < maxRetries; i++ {
+		nc, err = nats.Connect(natsUrl)
+		if err == nil {
+			break
+		}
+		errorLogger.Printf("Failed to connect to NATS (attempt %d/%d): %v", i+1, maxRetries, err)
+		time.Sleep(5 * time.Second) // Wait for 5 seconds before retrying
+	}
+
 	if err != nil {
-		errorLogger.Fatalf("Failed to connect to NATS at %s: %v", natsUrl, err)
+		errorLogger.Fatalf("Failed to connect to NATS after %d attempts: %v", maxRetries, err)
 	}
 
 	logger.Println("Connected to NATS successfully.")
