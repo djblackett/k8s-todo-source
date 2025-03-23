@@ -62,22 +62,37 @@ func main() {
 	}
 
 	// Simple Async Subscriber
-	nc.QueueSubscribe("broadcaster", "broadcast-workers", func(m *nats.Msg) {
-		logger.Printf("Received a message on 'broadcaster': %s", string(m.Data))
-		content = string(m.Data)
+	_, err = nc.QueueSubscribe("broadcaster", "broadcast-workers", func(m *nats.Msg) {
+    logger.Printf("Received a message on 'broadcaster': %s", string(m.Data))
+    content = string(m.Data)
 
-		if environment == "staging" {
-			logger.Printf("Logging message in staging: %s", content)
-		} else if environment == "production" {
-			logger.Println("Sending message to Discord webhook.")
-			err := discordwebhook.SendMessage(url, message)
-			if err != nil {
-				errorLogger.Fatalf("Failed to send message to Discord: %v", err)
-			}
-		} else {
-			errorLogger.Fatalln("ENVIRONMENT not set or unknown.")
-		}
-	})
+    if environment == "staging" {
+        logger.Printf("Logging message in staging: %s", content)
+    } else if environment == "production" {
+        logger.Println("Sending message to Discord webhook.")
+        err := discordwebhook.SendMessage(url, message)
+        if err != nil {
+            errorLogger.Printf("Failed to send message to Discord: %v", err)
+        }
+    } else {
+        errorLogger.Println("ENVIRONMENT not set or unknown.")
+    }
+})
+
+if err != nil {
+    errorLogger.Fatalf("Failed to subscribe to 'broadcaster': %v", err)
+}
+
+if err = nc.Flush(); err != nil {
+    errorLogger.Fatalf("Failed to flush NATS connection: %v", err)
+}
+
+if err := nc.LastError(); err != nil {
+    errorLogger.Fatalf("NATS error after flush: %v", err)
+}
+
+logger.Println("Subscription successfully established.")
+
 
 	// required for GKE
 	r.GET("/", func(c *gin.Context) {
