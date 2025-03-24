@@ -6,6 +6,7 @@ on:
       - main
     tags:
       - v*
+  workflow_dispatch:
 
 jobs:
   build:
@@ -68,6 +69,7 @@ jobs:
             kustomize edit set image PROJECT/FRONTEND="djblackett/todo-go-frontend:$GITHUB_SHA" \
               PROJECT/BACKEND="djblackett/todo-go-backend:$GITHUB_SHA" \
               PROJECT/BROADCASTER="djblackett/todo-go-broadcaster:$GITHUB_SHA"
+            cat kustomization.yaml
             kustomize build .
 
       - name: Commit and push changes
