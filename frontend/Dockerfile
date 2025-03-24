@@ -7,7 +7,7 @@ COPY todo-react/package*.json ./
 RUN npm install
 
 COPY ./todo-react ./
-RUN npm run build
+RUN GENERATE_SOURCEMAP=true npm run build 
 
 
 FROM golang:latest AS builder
@@ -27,13 +27,15 @@ FROM alpine:latest
 
 COPY --from=builder /todo-go .
 COPY --from=react-builder /app/build /build
-RUN mkdir tmp/kube
+RUN mkdir -p tmp/kube
 
 # Copy the entrypoint script
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
+RUN echo "$(ls)"
 
 # Set the entrypoint to the script
-ENTRYPOINT ["/entrypoint.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
 
 CMD ["/todo-go"]
