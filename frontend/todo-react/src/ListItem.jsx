@@ -20,15 +20,16 @@ function ListItem(props) {
   let checkVisible = completed ? "visible" : "hidden";
 
   const handleClick = async (e) => {
+    
     const result = await completeTodo(props.item)
-    // if (result) {
-    //   dispatch(completeItem(props.index))
-    // }
+    if (result) {
+      dispatch(completeItem(props.index));
+    }
   }
 
   return (
     <div
-      // tabIndex={0}
+  
       id="list-item"
       className={`list-item-${mode}-${completeStatus}`}
     >

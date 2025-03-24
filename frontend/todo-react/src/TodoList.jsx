@@ -9,7 +9,6 @@ import {
   reorderItems, initializeData, addList, fetchTodos,
 } from "./features/listItems/listItemsSlice";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import log from "eslint-plugin-react/lib/util/log";
 
 
 function TodoList() {
