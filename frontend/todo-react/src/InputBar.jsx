@@ -28,9 +28,6 @@ function InputBar() {
         transition: Bounce,
       });
 
-
-
-
       return;
     }
     const newEntry = {
@@ -89,7 +86,6 @@ function InputBar() {
             placeholder="Create a new todo..."
             onKeyDown={(e) => handleEnterPress(e)}
         />
-        <button id="send-button" className={`send-${mode}`} onClick={() => handleClick()}>Send</button>
       </div>
   );
 }

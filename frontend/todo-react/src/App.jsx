@@ -74,7 +74,6 @@ function App() {
         >
           Reset todo list
         </button>
-        <img id="download" src={"/img.jpg"} />
       </div>
     </main>
   );
