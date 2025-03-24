@@ -8,7 +8,6 @@ import {
 } from "./features/listItems/listItemsSlice";
 import {
   changeFilter,
-  // selectDataFilter,
 } from "./features/dataFilter/dataFilterSlice";
 
 function ListInfo(props) {
