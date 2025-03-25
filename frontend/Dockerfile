@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY todo-react/package*.json ./
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY ./todo-react ./
 RUN GENERATE_SOURCEMAP=true npm run build 
