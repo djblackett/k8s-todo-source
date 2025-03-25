@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Config } from "../../config";
+import { randomUUID } from "crypto";
 
 // const url = API_URL || "http://localhost:8000/todos";
 const url = "/todos";
@@ -43,7 +44,7 @@ export const fetchTodos = async () => {
 };
 
 export const addTodo = async (todo) => {
-  const newTodo = { ...todo };
+  const newTodo = { ...todo, id: randomUUID };
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -217,7 +217,7 @@ func startTimestampWatcher() {
 }
 
 type Todo struct {
-	Id        int    `json:"id"`
+	Id        string    `json:"id"`
 	Text      string `json:"text"`
 	Completed bool   `json:"completed"`
 }
