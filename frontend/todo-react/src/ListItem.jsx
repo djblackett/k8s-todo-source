@@ -28,7 +28,7 @@ function ListItem(props) {
   }
 
   const handleDelete = async () => {
-    const result = await deleteTodo();
+    const result = await deleteTodo(props.item);
     if (result) {
       dispatch(removeListItem(props.index));
     }
