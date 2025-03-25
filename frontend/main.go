@@ -42,29 +42,22 @@ func main() {
 		SkipPaths: []string{"/healthz"},
 	}))
 
-	http.Handle("/metrics", promhttp.Handler())
+	http.Handle("/api/metrics", promhttp.Handler())
 
-	// r.Static("/static", "./build/static")           // Serve static files from React's build directory
-	// r.StaticFile("/config.js", "./build/config.js") // Serve config.js separately
-	// r.StaticFile("/", "./build/index.html")
-
-	r.Static("/", "./build")
-
-	r.GET("/api/todos", func(c *gin.Context) {
+	todosHandler := func(c *gin.Context) {
 		resp, err := http.Get(backend + "/todos")
-
+	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
 			return
 		}
 		defer resp.Body.Close()
-
-		// Check if the request was successful
+	
 		if resp.StatusCode != http.StatusOK {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Remote server returned non-200 status"})
 			return
 		}
-
+	
 		// Decode the JSON response into the struct
 		var data Todo
 		if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
@@ -72,18 +65,11 @@ func main() {
 			return
 		}
 
-		// Relay the response back to the browser
 		c.JSON(http.StatusOK, data)
+	}
+	
 
-	})
-	// Serve the image file directly when accessing /img.jpg
-	r.StaticFile("/img.jpg", "./tmp/kube/img.jpg")
-
-	r.GET("/api/img", func(c *gin.Context) {
-		c.File("./tmp/kube/img.jpg")
-	})
-
-	r.GET("/api/healthz", func(c *gin.Context) {
+	healthzHandler := func(c *gin.Context) {
 		resp, err := http.Get("http://" + backend + "/frontend-check")
 		if err != nil {
 			log.Printf("Failed to connect to backend: %v", err)
@@ -91,16 +77,43 @@ func main() {
 			return
 		}
 		defer resp.Body.Close()
-
+	
 		if resp.StatusCode != http.StatusOK {
 			log.Printf("Backend returned non-200 status: %d", resp.StatusCode)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Backend is not healthy"})
 			return
 		}
-
+	
 		c.JSON(http.StatusOK, gin.H{"success": "Successfully connected to backend"})
+	
+	}
 
-	})
+	// r.Static("/static", "./build/static")           // Serve static files from React's build directory
+	// r.StaticFile("/config.js", "./build/config.js") // Serve config.js separately
+	// r.StaticFile("/", "./build/index.html")
+
+// API routes under /api
+	api := r.Group("/api")
+	{
+		api.GET("/todos", todosHandler)
+		api.GET("/healthz", healthzHandler)
+		// Add other API endpoints here
+	}
+
+	// Serve specific static assets if needed
+r.Static("/static", "./build/static")
+r.StaticFile("/config.js", "./build/config.js")
+r.StaticFile("/img.jpg", "./tmp/kube/img.jpg")
+
+// Catch-all route for client-side routing
+r.NoRoute(func(c *gin.Context) {
+    c.File("./build/index.html")
+})
+
+	
+
+	
+	// r.GET("/api/healthz", healthzHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
