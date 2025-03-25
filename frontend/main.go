@@ -46,18 +46,18 @@ func main() {
 
 	todosHandler := func(c *gin.Context) {
 		resp, err := http.Get(backend + "/todos")
-	
+
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
 			return
 		}
 		defer resp.Body.Close()
-	
+
 		if resp.StatusCode != http.StatusOK {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Remote server returned non-200 status"})
 			return
 		}
-	
+
 		// Decode the JSON response into the struct
 		var data Todo
 		if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
@@ -67,7 +67,6 @@ func main() {
 
 		c.JSON(http.StatusOK, data)
 	}
-	
 
 	healthzHandler := func(c *gin.Context) {
 		resp, err := http.Get("http://" + backend + "/frontend-check")
@@ -77,36 +76,45 @@ func main() {
 			return
 		}
 		defer resp.Body.Close()
-	
+
 		if resp.StatusCode != http.StatusOK {
 			log.Printf("Backend returned non-200 status: %d", resp.StatusCode)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Backend is not healthy"})
 			return
 		}
-	
+
 		c.JSON(http.StatusOK, gin.H{"success": "Successfully connected to backend"})
-	
+
 	}
 
-
-// API routes under /api
+	// API routes under /api
 	api := r.Group("/api")
 	{
 		api.GET("/todos", todosHandler)
 		api.GET("/healthz", healthzHandler)
+		api.DELETE("/todos/:id", func(c *gin.Context) {
+			id := c.Param("id")
+			resp, err := http.Get(backend + "/todos/" + id)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
+				return
+			}
+			defer resp.Body.Close()
+			c.JSON(http.StatusOK, gin.H{"success": "Successfully deleted todo"})
+		})
+
 		// Add other API endpoints here
 	}
 
 	// Serve specific static assets if needed
-r.Static("/static", "./build/static")
-r.StaticFile("/config.js", "./build/config.js")
-r.StaticFile("/img.jpg", "./tmp/kube/img.jpg")
+	r.Static("/static", "./build/static")
+	r.StaticFile("/config.js", "./build/config.js")
+	r.StaticFile("/img.jpg", "./tmp/kube/img.jpg")
 
-// Catch-all route for client-side routing
-r.NoRoute(func(c *gin.Context) {
-    c.File("./build/index.html")
-})
-
+	// Catch-all route for client-side routing
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./build/index.html")
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {

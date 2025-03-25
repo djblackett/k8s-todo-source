@@ -187,6 +187,25 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": todo})
 	})
 
+	r.DELETE("/todos/:id", func(c *gin.Context) {
+		var todo Todo
+		if err := db.Where("id = ?", c.Param("id")).First(&todo).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+			return
+		}
+
+		if err := db.Delete(&todo).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Simple Publisher
+		nc.Publish("broadcaster", []byte("Todo successfully deleted!"))
+
+		c.JSON(http.StatusOK, gin.H{"data": true})
+	})
+
+
 	r.GET("/healthz", func(c *gin.Context) {
 		var tables []string
 		err := db.Table("information_schema.tables").Select("table_name").Where("table_schema = ?", "public").Find(&tables).Error
