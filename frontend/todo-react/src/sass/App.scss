@@ -3,10 +3,11 @@
 @use "components/list-info";
 @use "helpers/variables";
 
-
 @font-face {
-    font-family: 'Josefin Sans';
-    src: local('Josefin Sans'), url(../fonts/Josefin_Sans/JosefinSans-VariableFont_wght.ttf) format('ttf');
+  font-family: "Josefin Sans";
+  src:
+    local("Josefin Sans"),
+    url(../fonts/Josefin_Sans/JosefinSans-VariableFont_wght.ttf) format("ttf");
 }
 
 ::focus {
@@ -36,11 +37,11 @@ body {
     font-family: "Josefin Sans", sans-serif;
 
     .background-img-dark {
-      background-image: url("../../images/bg-desktop-dark.jpg");
+      background-image: url("/images/bg-desktop-dark.jpg");
     }
 
     .background-img-light {
-      background-image: url("../../images/bg-desktop-light.jpg");
+      background-image: url("/images/bg-desktop-light.jpg");
     }
 
     #background-img {
@@ -122,7 +123,8 @@ body {
       border-radius: 5px;
       overflow: hidden;
 
-      box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+      box-shadow:
+        rgba(0, 0, 0, 0.19) 0px 10px 20px,
         rgba(0, 0, 0, 0.23) 0px 6px 6px;
 
       @media (max-width: 700px) {
@@ -141,7 +143,8 @@ body {
         @media (max-width: 700px) {
           border-radius: 5px;
           overflow: hidden;
-          box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+          box-shadow:
+            rgba(0, 0, 0, 0.19) 0px 10px 20px,
             rgba(0, 0, 0, 0.23) 0px 6px 6px;
 
           li {
@@ -183,7 +186,8 @@ body {
     margin: 25px;
     padding: 10px;
     border: none;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+    box-shadow:
+      rgba(0, 0, 0, 0.19) 0px 10px 20px,
       rgba(0, 0, 0, 0.23) 0px 6px 6px;
   }
 }
@@ -192,5 +196,7 @@ body {
   max-width: 300px;
   margin-bottom: 1rem;
   border: solid black 1px;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  box-shadow:
+    rgba(0, 0, 0, 0.19) 0px 10px 20px,
+    rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
