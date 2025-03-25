@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
 import {
   completeItem, completeTodo,
-  removeListItem,
+  removeListItem, deleteTodo
 } from "./features/listItems/listItemsSlice";
 
 const crossIconD =
