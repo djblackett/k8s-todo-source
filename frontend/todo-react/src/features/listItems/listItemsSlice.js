@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { Config } from "../../config";
 
 // const url = API_URL || "http://localhost:8000/todos";
-const url = "/api/todos"
+const url = "/todos"
 const initialData = [
   { id: "1234", text: "Welcome to your new todo list", completed: false },
   {

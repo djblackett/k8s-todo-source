@@ -88,9 +88,6 @@ func main() {
 	
 	}
 
-	// r.Static("/static", "./build/static")           // Serve static files from React's build directory
-	// r.StaticFile("/config.js", "./build/config.js") // Serve config.js separately
-	// r.StaticFile("/", "./build/index.html")
 
 // API routes under /api
 	api := r.Group("/api")
@@ -110,10 +107,6 @@ r.NoRoute(func(c *gin.Context) {
     c.File("./build/index.html")
 })
 
-	
-
-	
-	// r.GET("/api/healthz", healthzHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
