@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Config } from "../../config";
-import { randomUUID } from "crypto";
+import { v4 as randomUUID } from "uuid";
 
 // const url = API_URL || "http://localhost:8000/todos";
 const url = "/todos";
@@ -51,10 +51,12 @@ export const addTodo = async (todo) => {
     body: JSON.stringify(newTodo),
   };
 
+  console.log("newTodo: ", newTodo);
   const res = await fetch(url, requestOptions);
 
   if (res.ok) {
     const json = await res.json();
+    console.log("json: ", json);
     addListItem(json);
     return json;
   }
