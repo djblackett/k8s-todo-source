@@ -4,8 +4,10 @@ import Check from "./svg/icon-check.svg?react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
 import {
-  completeItem, completeTodo,
-  removeListItem, deleteTodo
+  completeItem,
+  completeTodo,
+  removeListItem,
+  deleteTodo,
 } from "./features/listItems/listItemsSlice";
 
 const crossIconD =
@@ -20,12 +22,11 @@ function ListItem(props) {
   let checkVisible = completed ? "visible" : "hidden";
 
   const handleClick = async (e) => {
-    
-    const result = await completeTodo(props.item)
+    const result = await completeTodo(props.item);
     if (result) {
       dispatch(completeItem(props.index));
     }
-  }
+  };
 
   const handleDelete = async () => {
     const result = await deleteTodo(props.item);
@@ -35,18 +36,14 @@ function ListItem(props) {
   };
 
   return (
-    <div
-  
-      id="list-item"
-      className={`list-item-${mode}-${completeStatus}`}
-    >
+    <div id="list-item" className={`list-item-${mode}-${completeStatus}`}>
       <div
         tabIndex={0}
         id="outer-circle"
         onClick={() => handleClick()}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            handleClick()
+            handleClick();
           }
         }}
       >
@@ -80,13 +77,15 @@ function ListItem(props) {
   );
 }
 
+export const MemoizedListItem = React.memo(ListItem);
+
 ListItem.propTypes = {
   text: PropTypes.string,
   completed: PropTypes.bool,
   deleteItem: PropTypes.func,
   index: PropTypes.number,
   completeItem: PropTypes.func,
-  item: PropTypes.object
+  item: PropTypes.object,
 };
 
 export default ListItem;

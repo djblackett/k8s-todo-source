@@ -6,13 +6,10 @@ import {
   selectListItems,
   clearCompletedItems,
 } from "./features/listItems/listItemsSlice";
-import {
-  changeFilter,
-} from "./features/dataFilter/dataFilterSlice";
+import { changeFilter } from "./features/dataFilter/dataFilterSlice";
 
 function ListInfo(props) {
   const mode = useSelector(selectColorMode);
-  // const dataFilter = useSelector(selectDataFilter);
   const listItems = useSelector(selectListItems);
   const dispatch = useDispatch();
 

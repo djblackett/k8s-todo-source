@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import ListInfo from "./ListInfo";
-import ListItem from "./ListItem";
+import ListItem, { MemoizedListItem } from "./ListItem";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useSelector, useDispatch } from "react-redux";
 import { selectDataFilter } from "./features/dataFilter/dataFilterSlice";
 import {
   selectListItems,
-  reorderItems, initializeData, addList, fetchTodos,
+  reorderItems,
+  initializeData,
+  addList,
+  fetchTodos,
 } from "./features/listItems/listItemsSlice";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
 
-
 function TodoList() {
-
   const mode = useSelector(selectColorMode);
   const listItems = useSelector(selectListItems);
   const dispatch = useDispatch();
@@ -22,13 +23,12 @@ function TodoList() {
 
   useEffect(() => {
     async function initializeTodos() {
-      const result = await fetchTodos()
-      console.log(result)
-      dispatch(addList(result))
-
+      const result = await fetchTodos();
+      console.log(result);
+      dispatch(addList(result));
     }
-    initializeTodos()
-  }, [])
+    initializeTodos();
+  }, []);
 
   const handleOnDragEnd = (result) => {
     const items = Array.from(filteredData);
@@ -87,11 +87,11 @@ function TodoList() {
       element.setAttribute("class", "list-option list-option-selected");
       active.setAttribute(
         "class",
-        `list-option list-option-unselected-${mode}`
+        `list-option list-option-unselected-${mode}`,
       );
       completed.setAttribute(
         "class",
-        `list-option list-option-unselected-${mode}`
+        `list-option list-option-unselected-${mode}`,
       );
       setDataFilter(() => {
         return "all";
@@ -101,7 +101,7 @@ function TodoList() {
       all.setAttribute("class", `list-option list-option-unselected-${mode}`);
       completed.setAttribute(
         "class",
-        `list-option list-option-unselected-${mode}`
+        `list-option list-option-unselected-${mode}`,
       );
       setDataFilter(() => {
         return "active";
@@ -110,7 +110,7 @@ function TodoList() {
       element.setAttribute("class", "list-option list-option-selected");
       active.setAttribute(
         "class",
-        `list-option list-option-unselected-${mode}`
+        `list-option list-option-unselected-${mode}`,
       );
       all.setAttribute("class", `list-option list-option-unselected-${mode}`);
       setDataFilter(() => {
@@ -129,32 +129,34 @@ function TodoList() {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {filteredData && filteredData.map((item, i) => {
-                return (
-                  <Draggable
-                    key={item.id}
-                    index={i}
-                    draggableId={String(item.id)}
-                    id="inner-list-container"
-                  >
-                    {(provided) => (
-                      <li key={"li-" + item.id}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <ListItem
+              {filteredData &&
+                filteredData.map((item, i) => {
+                  return (
+                    <Draggable
+                      key={item.id}
+                      index={i}
+                      draggableId={String(item.id)}
+                      id="inner-list-container"
+                    >
+                      {(provided) => (
+                        <li
+                          key={"li-" + item.id}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <MemoizedListItem
                             key={"list-item-" + item.id}
-                          text={item.text}
-                          index={Number(item.id)}
-                          completed={item.completed}
+                            text={item.text}
+                            index={Number(item.id)}
+                            completed={item.completed}
                             item={item}
-                        />
-                      </li>
-                    )}
-                  </Draggable>
-                );
-              })}
+                          />
+                        </li>
+                      )}
+                    </Draggable>
+                  );
+                })}
               {provided.placeholder}
             </ul>
           )}

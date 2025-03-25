@@ -106,13 +106,9 @@ func main() {
 		// Add other API endpoints here
 	}
 
-	// Serve specific static assets if needed
-	// r.Static("/assets", "./build/assets")
 	r.StaticFile("/config.js", "./build/config.js")
-	// r.StaticFile("/img.jpg", "./tmp/kube/img.jpg") // This is not needed anymore - only for k8s course
-
 	r.Static("/assets", "./build/assets")
-r.Static("/images", "./build/images")
+    r.Static("/images", "./build/images")
 
 	// Catch-all route for client-side routing
 	r.NoRoute(func(c *gin.Context) {

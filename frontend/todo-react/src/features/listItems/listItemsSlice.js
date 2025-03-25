@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { Config } from "../../config";
 
 // const url = API_URL || "http://localhost:8000/todos";
-const url = "/todos"
+const url = "/todos";
 const initialData = [
   { id: "1234", text: "Welcome to your new todo list", completed: false },
   {
@@ -32,85 +32,79 @@ export const initializeData = () => {
 };
 
 export const fetchTodos = async () => {
-
   const response = await fetch(url);
-  console.log("backend url: ", url)
+  console.log("backend url: ", url);
 
   if (response.ok) {
-    return response.json()
+    return response.json();
   } else {
-    console.log("error fetching todos")
-
+    console.log("error fetching todos");
   }
-}
+};
 
 export const addTodo = async (todo) => {
-  const newTodo = { ...todo }
+  const newTodo = { ...todo };
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newTodo)
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newTodo),
   };
-
 
   const res = await fetch(url, requestOptions);
 
   if (res.ok) {
-    const json = await res.json()
-    addListItem(json)
-    return json
+    const json = await res.json();
+    addListItem(json);
+    return json;
   }
-}
+};
 
 export const completeTodo = async (todo) => {
-  const newTodo = {...todo, completed: !todo.completed}
+  const newTodo = { ...todo, completed: !todo.completed };
   const requestOptions = {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newTodo)
-  }
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newTodo),
+  };
 
   const res = await fetch(url + "/" + todo.id, requestOptions);
 
   if (res.ok) {
-    const json = await res.json()
-    addListItem(json)
-    return json
+    const json = await res.json();
+    addListItem(json);
+    return json;
   }
-}
+};
 
 export const deleteTodo = async (todo) => {
-  const requestOptions = {  
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' }
-  }
+  const requestOptions = {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  };
 
   const res = await fetch(url + "/" + todo.id, requestOptions);
   if (res.ok) {
-    return todo
+    return todo;
   }
-
-}
+};
 
 const options = {
   name: "listItems",
   initialState: {
-    // listItems: initializeData(),
-    listItems: []
+    listItems: [],
   },
   reducers: {
     addListItem(state, action) {
       state.listItems.push({
-        // id: String(uniqueId++),
         ...action.payload,
       });
     },
     addList(state, action) {
-      state.listItems.push(...action.payload)
+      state.listItems.push(...action.payload);
     },
     removeListItem(state, action) {
       state.listItems = state.listItems.filter(
-        (item) => item.id !== String(action.payload)
+        (item) => item.id !== String(action.payload),
       );
     },
     reorderItems(state, action) {
@@ -121,9 +115,7 @@ const options = {
       state.filteredListItems = action.payload;
     },
     completeItem(state, action) {
-      let listItem = state.listItems.find(
-        (item) => item.id === action.payload
-      );
+      let listItem = state.listItems.find((item) => item.id === action.payload);
       listItem.completed = !listItem.completed;
     },
     clearCompletedItems(state) {
@@ -149,7 +141,7 @@ export const {
   completeItem,
   clearCompletedItems,
   resetList,
-  addList
+  addList,
 } = listItemsSlice.actions;
 
 export default listItemsSlice.reducer;
