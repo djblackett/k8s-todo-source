@@ -1,30 +1,30 @@
-@import "../helpers/variables";
+@use "../helpers/variables";
 
 .list-item-dark-active {
-  background-color: $darkItem !important;
-  border-bottom: 2px solid $darkListItemBorder;
-  color: $darkItemText1;
+  background-color: variables.$darkItem !important;
+  border-bottom: 2px solid variables.$darkListItemBorder;
+  color: variables.$darkItemText1;
   text-decoration: initial;
 }
 
 .list-item-dark-complete {
-  background-color: $darkItem !important;
-  border-bottom: 2px solid $darkListItemBorder;
-  color: $darkModeListColor;
+  background-color: variables.$darkItem !important;
+  border-bottom: 2px solid variables.$darkListItemBorder;
+  color: variables.$darkModeListColor;
   text-decoration: line-through;
 }
 
 .list-item-light-active {
-  background-color: $lightItemBackground !important;
-  border-bottom: 2px solid $lightListItemBorder;
-  color: $lightActiveText;
+  background-color: variables.$lightItemBackground !important;
+  border-bottom: 2px solid variables.$lightListItemBorder;
+  color: variables.$lightActiveText;
   text-decoration: initial;
 }
 
 .list-item-light-complete {
-  background-color: $lightItemBackground !important;
-  border-bottom: 2px solid $lightListItemBorder;
-  color: $lightListInfo;
+  background-color: variables.$lightItemBackground !important;
+  border-bottom: 2px solid variables.$lightListItemBorder;
+  color: variables.$lightListInfo;
   text-decoration: line-through;
 }
 
@@ -34,7 +34,7 @@
 
 #list-item {
   z-index: 4;
-  height: $listItemHeight;
+  height: variables.$listItemHeight;
   width: calc(100% - 20px);
   padding: 10px;
   margin: 0;
@@ -56,8 +56,8 @@
   #outer-circle {
     display: flex;
     background-image: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
-    height: $circleDiameter;
-    width: $circleDiameter;
+    height: variables.$circleDiameter;
+    width: variables.$circleDiameter;
     border-radius: 50%;
     z-index: 5;
     &:focus {
@@ -70,8 +70,8 @@
     #circle {
       justify-content: center;
       align-items: center;
-      height: calc($circleDiameter - 1px);
-      width: calc($circleDiameter - 1px);
+      height: calc(variables.$circleDiameter - 1px);
+      width: calc(variables.$circleDiameter - 1px);
       display: flex;
       justify-content: center;
       align-items: center;

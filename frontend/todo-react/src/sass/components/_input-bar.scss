@@ -1,14 +1,14 @@
-@import "../helpers/variables";
+@use "../helpers/variables";
 
 .input-component-light {
-  background-color: $lightItemBackground;
+  background-color: variables.$lightItemBackground;
   &:focus {
     border: 2px solid black;
   }
 }
 
 .input-component-dark {
-  background-color: $darkItem;
+  background-color: variables.$darkItem;
   &:focus {
     border: 2px solid white;
   }
@@ -20,7 +20,7 @@
   justify-content: space-between;
   align-items: center;
   z-index: 1;
-  height: $listItemHeight;
+  height: variables.$listItemHeight;
   width: calc(50% + 20px);
   margin-bottom: 20px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
@@ -36,8 +36,8 @@
   #outer-circle {
     display: flex;
     background-image: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
-    height: $circleDiameter;
-    width: $circleDiameter;
+    height: variables.$circleDiameter;
+    width: variables.$circleDiameter;
     border-radius: 50%;
     z-index: 5;
     margin-left: 10px;
@@ -45,8 +45,8 @@
     #circle {
       justify-content: center;
       align-items: center;
-      height: calc($circleDiameter - 1px);
-      width: calc($circleDiameter - 1px);
+      height: calc(variables.$circleDiameter - 1px);
+      width: calc(variables.$circleDiameter - 1px);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -57,27 +57,27 @@
   }
 
   .input-dark {
-    background-color: $darkItem;
-    color: $darkItemText1;
+    background-color: variables.$darkItem;
+    color: variables.$darkItemText1;
   }
 
   .input-light {
-    background-color: $lightItemBackground;
-    color: $lightActiveText;
+    background-color: variables.$lightItemBackground;
+    color: variables.$lightActiveText;
   }
 
   .send-light {
-    background-color: $lightItemBackground;
-    color: $lightActiveText;
+    background-color: variables.$lightItemBackground;
+    color: variables.$lightActiveText;
   }
 
   .send-dark {
-    background-color: $darkItem;
-    color: $darkItemText1;
+    background-color: variables.$darkItem;
+    color: variables.$darkItemText1;
   }
 
   #send-button {
-    height: $listItemHeight;
+    height: variables.$listItemHeight;
     font-size: 1rem;
     //outline: none;
     //border: none;
@@ -92,7 +92,7 @@
   }
 
   #input {
-    height: $listItemHeight;
+    height: variables.$listItemHeight;
     width: 90%;
     font-size: 1rem;
     outline: none;

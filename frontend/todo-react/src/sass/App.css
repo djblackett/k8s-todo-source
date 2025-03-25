@@ -385,7 +385,7 @@ body .App {
 }
 
 body .App .background-img-dark {
-  background-image: url("../../public/images/bg-desktop-dark.jpg");
+  background-image: url("../../images/bg-desktop-dark.jpg");
 }
 
 body .App .background-img-light {

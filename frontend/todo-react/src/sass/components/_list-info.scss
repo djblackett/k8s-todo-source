@@ -1,13 +1,13 @@
-@import "../helpers/variables";
+@use "../helpers/variables";
 
 .list-info-dark {
-  background-color: $darkItem;
-  color: $darkModeListColor;
+  background-color: variables.$darkItem;
+  color: variables.$darkModeListColor;
 }
 
 .list-info-light {
-  background-color: $lightItemBackground;
-  color: $lightActiveText;
+  background-color: variables.$lightItemBackground;
+  color: variables.$lightActiveText;
 }
 
 #list-info {
@@ -50,35 +50,35 @@
     }
 
     .list-option-selected {
-      color: $brightBlue !important;
+      color: variables.$brightBlue !important;
     }
 
     .list-option-unselected-dark {
-      color: $darkModeListColor;
+      color: variables.$darkModeListColor;
       &:hover {
-        color: $darkModeHover !important;
+        color: variables.$darkModeHover !important;
       }
     }
 
     .list-option-unselected-light {
-      color: $lightListInfo;
+      color: variables.$lightListInfo;
       &:hover {
-        color: $lightActiveText;
+        color: variables.$lightActiveText;
       }
     }
   }
 
   .clear-button-dark {
-    color: $darkModeListColor;
+    color: variables.$darkModeListColor;
     &:hover {
-      color: $darkModeHover;
+      color: variables.$darkModeHover;
     }
   }
 
   .clear-button-light {
-    color: $lightListInfo;
+    color: variables.$lightListInfo;
     &:hover {
-      color: $lightActiveText !important;
+      color: variables.$lightActiveText !important;
     }
   }
 

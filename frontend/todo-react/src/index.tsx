@@ -1,19 +1,24 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import ReactDOM from "react-dom";
 import "./sass/index.scss";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import App from "./App.jsx";
+import reportWebVitals from "./reportWebVitals.js";
 import { Provider } from "react-redux";
 import store from "./features/app/store.js";
+import { createRoot } from "react-dom/client";
 
-ReactDOM.render(
+const container = document.getElementById("root");
+if (!container) {
+  throw new Error("No container found");
+}
+
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
-  <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById("root")
+    <Provider store={store}>
+    <App />
+    </Provider >
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
