@@ -1,13 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
+// @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
 @import "components/list-item";
 @import "components/input-bar";
 @import "components/list-info";
 @import "helpers/variables";
 
-// ::selection {
-//   color: red;
-//   background-color: red;
-// }
+
+@font-face {
+    font-family: 'Josefin Sans';
+    src: local('Josefin Sans'), url(../../fonts/JosefinSans-Regular.ttf) format('ttf');
+}
 
 ::focus {
   outline-color: green;
@@ -180,7 +181,6 @@ body {
     margin: 25px;
     padding: 10px;
     border: none;
-    // filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 1));
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
       rgba(0, 0, 0, 0.23) 0px 6px 6px;
   }
@@ -191,9 +191,4 @@ body {
   margin-bottom: 1rem;
   border: solid black 1px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-
-
-  //position: absolute;
-  //top: 0;
-  //left: 0;
 }
