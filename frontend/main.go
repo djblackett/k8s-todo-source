@@ -44,8 +44,7 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 
-	r.Static("/", "./build")
-
+	
 
 	r.GET("/todos", func(c *gin.Context) {
 		resp, err := http.Get(backend + "/todos")
@@ -98,6 +97,9 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"success": "Successfully connected to backend"})
 
 	})
+
+	r.Static("/", "./build")
+
 
 	port := os.Getenv("PORT")
 	if port == "" {
