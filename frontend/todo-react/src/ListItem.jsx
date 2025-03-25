@@ -27,6 +27,13 @@ function ListItem(props) {
     }
   }
 
+  const handleDelete = async () => {
+    const result = await deleteTodo();
+    if (result) {
+      dispatch(removeListItem(props.index));
+    }
+  };
+
   return (
     <div
   
@@ -60,10 +67,10 @@ function ListItem(props) {
         width="18"
         height="18"
         id="crossIcon"
-        onClick={() => dispatch(removeListItem(props.index))}
+        onClick={() => handleDelete()}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            dispatch(removeListItem(props.index));
+            handleDelete();
           }
         }}
       >

@@ -213,17 +213,6 @@ type Todo struct {
 	Completed bool   `json:"completed"`
 }
 
-//func (todo Todo) completeTodo(todos []Todo, Id int) {
-//	for i, todo := range todos {
-//		if todo.Id == Id {
-//			todos[i].Completed = true
-//			fmt.Println("Todo item Completed:", todos[i])
-//			return
-//		}
-//	}
-//	fmt.Println("Todo item with Id", Id, "not found")
-//}
-
 type UpdateTodoInput struct {
 	Id        int  `json:"title"`
 	Completed bool `json:"completed"`
