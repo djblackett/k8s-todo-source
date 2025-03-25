@@ -44,9 +44,11 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 
-	
+	r.Static("/static", "./build/static")           // Serve static files from React's build directory
+	r.StaticFile("/config.js", "./build/config.js") // Serve config.js separately
+	r.StaticFile("/", "./build/index.html")
 
-	r.GET("/todos", func(c *gin.Context) {
+	r.GET("/api/todos", func(c *gin.Context) {
 		resp, err := http.Get(backend + "/todos")
 
 		if err != nil {
@@ -75,11 +77,11 @@ func main() {
 	// Serve the image file directly when accessing /img.jpg
 	r.StaticFile("/img.jpg", "./tmp/kube/img.jpg")
 
-	r.GET("/img", func(c *gin.Context) {
+	r.GET("/api/img", func(c *gin.Context) {
 		c.File("./tmp/kube/img.jpg")
 	})
 
-	r.GET("/healthz", func(c *gin.Context) {
+	r.GET("/api/healthz", func(c *gin.Context) {
 		resp, err := http.Get("http://" + backend + "/frontend-check")
 		if err != nil {
 			log.Printf("Failed to connect to backend: %v", err)
@@ -97,9 +99,6 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"success": "Successfully connected to backend"})
 
 	})
-
-	r.Static("/", "./build")
-
 
 	port := os.Getenv("PORT")
 	if port == "" {
