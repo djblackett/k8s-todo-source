@@ -10,6 +10,7 @@ import {
   deleteTodo,
 } from "./features/listItems/listItemsSlice";
 import { Todo } from "./types/types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const crossIconD =
   "M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z";
@@ -21,6 +22,8 @@ function ListItem({ item }: { item: Todo }) {
   let completeStatus = completed ? "complete" : "active";
   let circleVisible = completed ? "hidden" : "active";
   let checkVisible = completed ? "visible" : "hidden";
+
+  const queryClient = useQueryClient();
 
   const handleClick = async (e: SyntheticEvent) => {
     const result = await completeTodo(item);
@@ -36,15 +39,29 @@ function ListItem({ item }: { item: Todo }) {
     }
   };
 
+  const completeTodoMutation = useMutation({
+    mutationFn: completeTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
   return (
     <div id="list-item" className={`list-item-${mode}-${completeStatus}`}>
       <div
         tabIndex={0}
         id="outer-circle"
-        onClick={(e) => handleClick(e)}
+        onClick={() => completeTodoMutation.mutate(item)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            handleClick(e);
+            () => completeTodoMutation.mutate(item);
           }
         }}
       >
@@ -65,10 +82,10 @@ function ListItem({ item }: { item: Todo }) {
         width="18"
         height="18"
         id="crossIcon"
-        onClick={() => handleDelete()}
+        onClick={() => deleteTodoMutation.mutate(item)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            handleDelete();
+            () => deleteTodoMutation.mutate(item);
           }
         }}
       >

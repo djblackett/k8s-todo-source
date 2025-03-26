@@ -1,12 +1,22 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import { addListItem, addTodo } from "./features/listItems/listItemsSlice";
+import { addTodo } from "./features/listItems/listItemsSlice";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function InputBar() {
-  const dispatch = useDispatch();
   let mode = useSelector(selectColorMode);
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: addTodo,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
   const handleEnterPress = async (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -19,9 +29,7 @@ function InputBar() {
         completed: false,
       };
 
-      const res = await addTodo(newEntry);
-      console.log(res);
-      dispatch(addListItem(res));
+      mutation.mutate(newEntry);
       (document.getElementById("input") as HTMLInputElement).value = "";
     }
   };
