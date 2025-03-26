@@ -3,7 +3,7 @@ import { selectColorMode } from "./features/colorMode/colorModeSlice";
 import { deleteCompletedTodos } from "./features/listItems/listUtils";
 import { changeFilter } from "./features/dataFilter/dataFilterSlice";
 import { Todo } from "./types/types";
-import { SyntheticEvent, useMemo } from "react";
+import { SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ListInfoProps {
@@ -15,6 +15,11 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
   const mode = useSelector(selectColorMode);
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+
+  // const [textColor, setTextColor] = useState("");
+
+  // useEffect(() => {
+
   const deleteCompletedItems = useMutation({
     mutationFn: deleteCompletedTodos,
     onSuccess: () => {
@@ -23,6 +28,8 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
   });
 
   const flashRed = (e: SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     let element = e.target as HTMLElement;
     let currentColor = element.style.color;
     element.style.color = "red";
