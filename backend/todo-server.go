@@ -77,7 +77,7 @@ func main() {
 	fmt.Println("Successfully connected!")
 
 	r := gin.New()
-	//r.Use(LoggerMiddleware())
+
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
 		SkipPaths: []string{"/healthz"},
 	}))
