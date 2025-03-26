@@ -227,12 +227,12 @@ func main() {
 
 type Todo struct {
 	gorm.Model
-	Id        int    `json:"id"`
+	Id        string    `json:"id"`
 	Text      string `json:"text"`
 	Completed bool   `json:"completed"`
 }
 
 type UpdateTodoInput struct {
-	Id        int  `json:"title"`
+	Id        string  `json:"title"`
 	Completed bool `json:"completed"`
 }
