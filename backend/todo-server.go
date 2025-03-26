@@ -205,6 +205,14 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": true})
 	})
 
+	r.DELETE("/todos", func(c *gin.Context) {
+		if err := db.Where("completed = ?", true).Delete(&Todo{}).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": true})
+	})
+
 
 	r.GET("/healthz", func(c *gin.Context) {
 		var tables []string

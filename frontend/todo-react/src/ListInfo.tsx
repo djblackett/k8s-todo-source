@@ -1,9 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import { clearCompletedItems } from "./features/listItems/listItemsSlice";
+import { deleteCompletedTodos } from "./features/listItems/listItemsSlice";
 import { changeFilter } from "./features/dataFilter/dataFilterSlice";
 import { Todo } from "./types/types";
 import { SyntheticEvent } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ListInfoProps {
   listChange: (e: any) => void;
@@ -13,6 +14,18 @@ interface ListInfoProps {
 function ListInfo({ listChange, listItems }: ListInfoProps) {
   const mode = useSelector(selectColorMode);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const deleteCompletedItems = () =>
+    useMutation({
+      mutationFn: deleteCompletedTodos,
+      onMutate: () => {
+        console.log("Clearing completed items...");
+      },
+      onSuccess: () => {
+        console.log("Completed items cleared!");
+        queryClient.invalidateQueries({ queryKey: ["todos"] });
+      },
+    });
 
   const flashRed = (e: SyntheticEvent) => {
     let element = e.target as HTMLElement;
@@ -33,7 +46,7 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
 
   const clickFunctions = (e: any) => {
     flashRed(e);
-    dispatch(clearCompletedItems());
+    deleteCompletedItems().mutate();
   };
 
   const handleItemsLeft = () => {

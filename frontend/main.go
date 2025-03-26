@@ -102,6 +102,7 @@ func main() {
 			defer resp.Body.Close()
 			c.JSON(http.StatusOK, gin.H{"success": "Successfully deleted todo"})
 		})
+		
 
 		// Add other API endpoints here
 	}

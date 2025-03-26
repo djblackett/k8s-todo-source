@@ -96,6 +96,18 @@ export const deleteTodo = async (todo: Todo) => {
   }
 };
 
+export const deleteCompletedTodos = async () => {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  };
+
+  const res = await fetch(url + "/completed", requestOptions);
+  if (res.ok) {
+    return res;
+  }
+};
+
 const options = {
   name: "listItems",
   initialState: {
