@@ -27,11 +27,6 @@ function TodoList() {
     queryFn: fetchTodos,
   });
 
-  useEffect(() => {
-    if (data) {
-    }
-  }, [data]);
-
   const handleOnDragEnd = (result: DropResult) => {
     // If there's no destination (dropped outside the list), do nothing
     if (!result.destination) return;
@@ -166,7 +161,7 @@ function TodoList() {
           )}
         </Droppable>
       </DragDropContext>
-      <ListInfo listChange={handleListChange} />
+      <ListInfo listChange={handleListChange} listItems={data} />
     </div>
   );
 }

@@ -1,14 +1,9 @@
-import React, { SyntheticEvent } from "react";
+import React from "react";
 // @ts-ignore-next-line
 import Check from "./svg/icon-check.svg?react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import {
-  completeItem,
-  completeTodo,
-  removeListItem,
-  deleteTodo,
-} from "./features/listItems/listItemsSlice";
+import { completeTodo, deleteTodo } from "./features/listItems/listItemsSlice";
 import { Todo } from "./types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -17,27 +12,12 @@ const crossIconD =
 
 function ListItem({ item }: { item: Todo }) {
   const mode = useSelector(selectColorMode);
-  const dispatch = useDispatch();
   let completed = item.completed;
   let completeStatus = completed ? "complete" : "active";
   let circleVisible = completed ? "hidden" : "active";
   let checkVisible = completed ? "visible" : "hidden";
 
   const queryClient = useQueryClient();
-
-  const handleClick = async (e: SyntheticEvent) => {
-    const result = await completeTodo(item);
-    if (result) {
-      dispatch(completeItem(item.id));
-    }
-  };
-
-  const handleDelete = async () => {
-    const result = await deleteTodo(item);
-    if (result) {
-      dispatch(removeListItem(item.id));
-    }
-  };
 
   const completeTodoMutation = useMutation({
     mutationFn: completeTodo,

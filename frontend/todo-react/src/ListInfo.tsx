@@ -1,20 +1,17 @@
 import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import {
-  selectListItems,
-  clearCompletedItems,
-} from "./features/listItems/listItemsSlice";
+import { clearCompletedItems } from "./features/listItems/listItemsSlice";
 import { changeFilter } from "./features/dataFilter/dataFilterSlice";
 import { Todo } from "./types/types";
 import { SyntheticEvent } from "react";
 
 interface ListInfoProps {
   listChange: (e: any) => void;
+  listItems: Todo[];
 }
 
-function ListInfo({ listChange }: ListInfoProps) {
+function ListInfo({ listChange, listItems }: ListInfoProps) {
   const mode = useSelector(selectColorMode);
-  const listItems = useSelector(selectListItems);
   const dispatch = useDispatch();
 
   const flashRed = (e: SyntheticEvent) => {
