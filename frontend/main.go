@@ -102,7 +102,7 @@ func main() {
 			defer resp.Body.Close()
 			c.JSON(http.StatusOK, gin.H{"success": "Successfully deleted todo"})
 		})
-		
+
 
 		// Add other API endpoints here
 	}
@@ -110,6 +110,8 @@ func main() {
 	r.StaticFile("/config.js", "./build/config.js")
 	r.Static("/assets", "./build/assets")
     r.Static("/images", "./build/images")
+	r.StaticFile("/manifest.json", "./build/manifest.json")
+
 
 	// Catch-all route for client-side routing
 	r.NoRoute(func(c *gin.Context) {
