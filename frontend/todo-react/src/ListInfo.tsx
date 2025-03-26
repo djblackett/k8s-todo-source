@@ -17,11 +17,7 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
   const queryClient = useQueryClient();
   const deleteCompletedItems = useMutation({
     mutationFn: deleteCompletedTodos,
-    onMutate: () => {
-      console.log("Clearing completed items...");
-    },
     onSuccess: () => {
-      console.log("Completed items cleared!");
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });

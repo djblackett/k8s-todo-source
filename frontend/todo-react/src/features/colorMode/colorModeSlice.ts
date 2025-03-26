@@ -27,7 +27,6 @@ const initializeColorMode = (): ColorModeState => {
     }
     // otherwise
   } else {
-    // return an empty array
     return { colorMode: "dark", image: vectorImages.sun };
   }
 };
@@ -38,13 +37,9 @@ const options = {
   reducers: {
     toggleColorMode(state: ColorModeState) {
       if (state?.colorMode === "dark") {
-        console.log("switching to light mode");
-        console.log("state:", state);
         state.colorMode = "light";
         state.image = vectorImages.moon;
       } else {
-        console.log("switching to dark mode");
-        console.log("state:", state);
         state.colorMode = "dark";
         state.image = vectorImages.sun;
       }
@@ -55,7 +50,6 @@ const options = {
 const colorModeSlice = createSlice(options);
 
 export const selectColorMode = (state: { colorMode: { colorMode: any } }) => {
-  console.log("selecting color mode:", state.colorMode.colorMode);
   return state.colorMode.colorMode;
 };
 

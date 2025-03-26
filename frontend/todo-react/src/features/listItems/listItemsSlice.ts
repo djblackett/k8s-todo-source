@@ -39,12 +39,11 @@ export const initializeData = () => {
 
 export const fetchTodos = async () => {
   const response = await fetch(url);
-  console.log("backend url: ", url);
 
   if (response.ok) {
     return response.json();
   } else {
-    console.log("error fetching todos");
+    console.error("error fetching todos");
   }
 };
 
@@ -56,12 +55,11 @@ export const addTodo = async (todo: Partial<Todo>) => {
     body: JSON.stringify(newTodo),
   };
 
-  console.log("newTodo: ", newTodo);
   const res = await fetch(url, requestOptions);
 
   if (res.ok) {
     const json = await res.json();
-    console.log("json: ", json);
+
     addListItem(json);
     return json;
   }
