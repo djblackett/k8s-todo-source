@@ -21,7 +21,30 @@ function ListItem({ item }: { item: Todo }) {
 
   const completeTodoMutation = useMutation({
     mutationFn: completeTodo,
-    onSuccess: () => {
+    onMutate: async (updatedTodo: Todo) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
+
+      // Snapshot the previous todos
+      const previousTodos = queryClient.getQueryData(["todos"]);
+
+      // Optimistically update the cache to mark the todo as complete
+      queryClient.setQueryData(["todos"], (oldTodos: Todo[]) =>
+        oldTodos.map((todo) =>
+          todo.id === updatedTodo.id
+            ? { ...todo, completed: !todo.completed }
+            : todo,
+        ),
+      );
+
+      // Return context with the previous data to rollback on error
+      return { previousTodos };
+    },
+    onError: (_, __, context) => {
+      // Rollback the cache update if the mutation fails
+      queryClient.setQueryData(["todos"], context?.previousTodos);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
