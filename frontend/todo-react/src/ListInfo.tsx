@@ -1,5 +1,3 @@
-import React from "react";
-import { PropTypes } from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
 import {
@@ -7,14 +5,20 @@ import {
   clearCompletedItems,
 } from "./features/listItems/listItemsSlice";
 import { changeFilter } from "./features/dataFilter/dataFilterSlice";
+import { Todo } from "./types/types";
+import { SyntheticEvent } from "react";
 
-function ListInfo(props) {
+interface ListInfoProps {
+  listChange: (e: any) => void;
+}
+
+function ListInfo({ listChange }: ListInfoProps) {
   const mode = useSelector(selectColorMode);
   const listItems = useSelector(selectListItems);
   const dispatch = useDispatch();
 
-  const flashRed = (e) => {
-    let element = e.target;
+  const flashRed = (e: SyntheticEvent) => {
+    let element = e.target as HTMLElement;
     let currentColor = element.style.color;
     element.style.color = "red";
     setTimeout(() => {
@@ -22,20 +26,22 @@ function ListInfo(props) {
     }, 200);
   };
 
-  function handleChangeFilter(e) {
+  function handleChangeFilter(e: any) {
     let filter = e.target.innerText.toLowerCase();
-    dispatch(changeFilter({ filter: filter }));
-    props.listChange(e);
+    if (filter) {
+      dispatch(changeFilter(filter));
+    }
+    listChange(e);
   }
 
-  const clickFunctions = (e) => {
+  const clickFunctions = (e: any) => {
     flashRed(e);
     dispatch(clearCompletedItems());
   };
 
   const handleItemsLeft = () => {
     if (listItems) {
-      return listItems.filter((item) => !item.completed).length;
+      return listItems.filter((item: Todo) => !item.completed).length;
     }
   };
 
@@ -83,9 +89,5 @@ function ListInfo(props) {
     </div>
   );
 }
-
-ListInfo.propTypes = {
-  listChange: PropTypes.func,
-};
 
 export default ListInfo;

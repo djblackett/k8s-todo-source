@@ -8,7 +8,6 @@ const options = {
   reducers: {
     changeFilter: (state, action) => {
       state.filter = action.payload;
-      return state;
     },
   },
 };
