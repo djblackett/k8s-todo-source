@@ -15,17 +15,16 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
   const mode = useSelector(selectColorMode);
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const deleteCompletedItems = () =>
-    useMutation({
-      mutationFn: deleteCompletedTodos,
-      onMutate: () => {
-        console.log("Clearing completed items...");
-      },
-      onSuccess: () => {
-        console.log("Completed items cleared!");
-        queryClient.invalidateQueries({ queryKey: ["todos"] });
-      },
-    });
+  const deleteCompletedItems = useMutation({
+    mutationFn: deleteCompletedTodos,
+    onMutate: () => {
+      console.log("Clearing completed items...");
+    },
+    onSuccess: () => {
+      console.log("Completed items cleared!");
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
   const flashRed = (e: SyntheticEvent) => {
     let element = e.target as HTMLElement;
@@ -46,7 +45,7 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
 
   const clickFunctions = (e: any) => {
     flashRed(e);
-    deleteCompletedItems().mutate();
+    deleteCompletedItems.mutate();
   };
 
   const handleItemsLeft = () => {
