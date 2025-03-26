@@ -1,5 +1,5 @@
-import React from "react";
-import { PropTypes } from "prop-types";
+import React, { SyntheticEvent } from "react";
+// @ts-ignore-next-line
 import Check from "./svg/icon-check.svg?react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
@@ -9,29 +9,30 @@ import {
   removeListItem,
   deleteTodo,
 } from "./features/listItems/listItemsSlice";
+import { Todo } from "./types/types";
 
 const crossIconD =
   "M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z";
 
-function ListItem(props) {
+function ListItem({ item }: { item: Todo }) {
   const mode = useSelector(selectColorMode);
   const dispatch = useDispatch();
-  let completed = props.completed;
+  let completed = item.completed;
   let completeStatus = completed ? "complete" : "active";
   let circleVisible = completed ? "hidden" : "active";
   let checkVisible = completed ? "visible" : "hidden";
 
-  const handleClick = async (e) => {
-    const result = await completeTodo(props.item);
+  const handleClick = async (e: SyntheticEvent) => {
+    const result = await completeTodo(item);
     if (result) {
-      dispatch(completeItem(props.index));
+      dispatch(completeItem(item.id));
     }
   };
 
   const handleDelete = async () => {
-    const result = await deleteTodo(props.item);
+    const result = await deleteTodo(item);
     if (result) {
-      dispatch(removeListItem(props.item.id));
+      dispatch(removeListItem(item.id));
     }
   };
 
@@ -40,10 +41,10 @@ function ListItem(props) {
       <div
         tabIndex={0}
         id="outer-circle"
-        onClick={() => handleClick()}
+        onClick={(e) => handleClick(e)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            handleClick();
+            handleClick(e);
           }
         }}
       >
@@ -56,7 +57,7 @@ function ListItem(props) {
         </div>
       </div>
       <p tabIndex={-1} id="list-item-text" className="dark">
-        {props.text}
+        {item.text}
       </p>
       <svg
         tabIndex={0}
@@ -78,14 +79,5 @@ function ListItem(props) {
 }
 
 export const MemoizedListItem = React.memo(ListItem);
-
-ListItem.propTypes = {
-  text: PropTypes.string,
-  completed: PropTypes.bool,
-  deleteItem: PropTypes.func,
-  index: PropTypes.number,
-  completeItem: PropTypes.func,
-  item: PropTypes.object,
-};
 
 export default ListItem;

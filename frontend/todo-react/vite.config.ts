@@ -6,11 +6,7 @@ import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    svgr()
-  ],
+  plugins: [react(), tsconfigPaths(), svgr()],
   base: "/",
   server: {
     host: "0.0.0.0",
@@ -19,7 +15,6 @@ export default defineConfig({
       host: "localhost",
       port: 5173,
     },
-  
   },
   build: {
     outDir: "build",

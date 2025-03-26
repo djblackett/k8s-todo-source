@@ -48,7 +48,7 @@ export const fetchTodos = async () => {
   }
 };
 
-export const addTodo = async (todo: Todo) => {
+export const addTodo = async (todo: Partial<Todo>) => {
   const newTodo = { ...todo, id: uuidv4() };
   const requestOptions = {
     method: "POST",

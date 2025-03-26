@@ -31,26 +31,25 @@ const options = {
   name: "colorMode",
   initialState: initializeColorMode,
   reducers: {
-    toggleColorMode(state) {
-      if (state.colorMode === "dark") {
+    toggleColorMode(state: { colorMode: any; image?: string } | undefined) {
+      if (state?.colorMode === "dark") {
         console.log("switching to light mode");
         state = { colorMode: "light", image: vectorImages.moon };
       } else {
         console.log("switching to dark mode");
         state = { colorMode: "dark", image: vectorImages.sun };
       }
-      return state;
     },
   },
 };
 
 const colorModeSlice = createSlice(options);
 
-export const selectColorMode = (state) => {
+export const selectColorMode = (state: { colorMode: { colorMode: any } }) => {
   return state.colorMode.colorMode;
 };
 
-export const selectImage = (state) => {
+export const selectImage = (state: { colorMode: { image: any } }) => {
   return state.colorMode.image;
 };
 

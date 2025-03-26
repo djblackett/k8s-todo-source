@@ -154,9 +154,6 @@ function TodoList() {
                         >
                           <MemoizedListItem
                             key={"list-item-" + item.id}
-                            text={item.text}
-                            index={Number(item.id)}
-                            completed={item.completed}
                             item={item}
                           />
                         </li>
