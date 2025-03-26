@@ -107,10 +107,15 @@ func main() {
 		// Add other API endpoints here
 	}
 
-	r.StaticFile("/config.js", "./build/config.js")
+	
 	r.Static("/assets", "./build/assets")
     r.Static("/images", "./build/images")
+	r.StaticFile("/config.js", "./build/config.js")
+	r.StaticFile("/favicon.ico", "./build/favicon.ico")
+	r.StaticFile("/logo192.png", "./build/logo192.png")
+	r.StaticFile("/logo512.png", "./build/logo512.png")
 	r.StaticFile("/manifest.json", "./build/manifest.json")
+	r.StaticFile("/robots.txt", "./build/robots.txt")
 
 
 	// Catch-all route for client-side routing
