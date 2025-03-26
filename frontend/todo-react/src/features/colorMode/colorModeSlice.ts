@@ -5,7 +5,12 @@ const vectorImages = {
   sun: "M13 21a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-5.657-2.343a1 1 0 010 1.414l-2.121 2.121a1 1 0 01-1.414-1.414l2.12-2.121a1 1 0 011.415 0zm12.728 0l2.121 2.121a1 1 0 01-1.414 1.414l-2.121-2.12a1 1 0 011.414-1.415zM13 8a5 5 0 110 10 5 5 0 010-10zm12 4a1 1 0 110 2h-3a1 1 0 110-2h3zM4 12a1 1 0 110 2H1a1 1 0 110-2h3zm18.192-8.192a1 1 0 010 1.414l-2.12 2.121a1 1 0 01-1.415-1.414l2.121-2.121a1 1 0 011.414 0zm-16.97 0l2.121 2.12A1 1 0 015.93 7.344L3.808 5.222a1 1 0 011.414-1.414zM13 0a1 1 0 011 1v3a1 1 0 11-2 0V1a1 1 0 011-1z",
 };
 
-const initializeColorMode = () => {
+interface ColorModeState {
+  colorMode: string;
+  image?: string;
+}
+
+const initializeColorMode = (): ColorModeState => {
   // get the todos from localstorage
   const mode = localStorage.getItem("mode");
   // if there are todos stored
@@ -29,15 +34,19 @@ const initializeColorMode = () => {
 
 const options = {
   name: "colorMode",
-  initialState: initializeColorMode,
+  initialState: initializeColorMode(),
   reducers: {
-    toggleColorMode(state: { colorMode: any; image?: string } | undefined) {
+    toggleColorMode(state: ColorModeState) {
       if (state?.colorMode === "dark") {
         console.log("switching to light mode");
-        state = { colorMode: "light", image: vectorImages.moon };
+        console.log("state:", state);
+        state.colorMode = "light";
+        state.image = vectorImages.moon;
       } else {
         console.log("switching to dark mode");
-        state = { colorMode: "dark", image: vectorImages.sun };
+        console.log("state:", state);
+        state.colorMode = "dark";
+        state.image = vectorImages.sun;
       }
     },
   },
@@ -46,6 +55,7 @@ const options = {
 const colorModeSlice = createSlice(options);
 
 export const selectColorMode = (state: { colorMode: { colorMode: any } }) => {
+  console.log("selecting color mode:", state.colorMode.colorMode);
   return state.colorMode.colorMode;
 };
 
