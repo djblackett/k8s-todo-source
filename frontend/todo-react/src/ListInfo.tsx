@@ -3,7 +3,7 @@ import { selectColorMode } from "./features/colorMode/colorModeSlice";
 import { deleteCompletedTodos } from "./features/listItems/listUtils";
 import { changeFilter } from "./features/dataFilter/dataFilterSlice";
 import { Todo } from "./types/types";
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ListInfoProps {
@@ -50,19 +50,28 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
     }
   };
 
+  const itemsLeft = useMemo(() => handleItemsLeft(), [listItems]);
+
   return (
     <div
       id="list-info"
       className={`list-info-${mode}`}
       data-testid="list-info-component-test"
     >
-      <p>{handleItemsLeft()} items left</p>
+      <p>
+        {itemsLeft} item{itemsLeft !== 1 && "s"} left
+      </p>
       <div id="completion-status">
         <button
           tabIndex={0}
           id="list-all"
           className="list-option list-option-selected"
           onClick={handleChangeFilter}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleChangeFilter(e);
+            }
+          }}
         >
           All
         </button>
@@ -71,6 +80,11 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
           id="list-active"
           className={`list-option list-option-unselected-${mode}`}
           onClick={handleChangeFilter}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleChangeFilter(e);
+            }
+          }}
         >
           Active
         </button>
@@ -79,6 +93,11 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
           id="list-completed"
           className={`list-option list-option-unselected-${mode}`}
           onClick={handleChangeFilter}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleChangeFilter(e);
+            }
+          }}
         >
           Completed
         </button>
@@ -88,6 +107,11 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
         id="clear-button"
         className={`clear-button-${mode}`}
         onClick={clickFunctions}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            clickFunctions(e);
+          }
+        }}
       >
         Clear Completed
       </button>

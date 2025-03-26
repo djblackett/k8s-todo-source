@@ -41,7 +41,7 @@ function ListItem({ item }: { item: Todo }) {
         onClick={() => completeTodoMutation.mutate(item)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            () => completeTodoMutation.mutate(item);
+            completeTodoMutation.mutate(item);
           }
         }}
       >
@@ -65,7 +65,7 @@ function ListItem({ item }: { item: Todo }) {
         onClick={() => deleteTodoMutation.mutate(item)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            () => deleteTodoMutation.mutate(item);
+            deleteTodoMutation.mutate(item);
           }
         }}
       >
