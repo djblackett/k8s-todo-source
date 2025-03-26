@@ -44,9 +44,9 @@ function ListItem({ item }: { item: Todo }) {
       // Rollback the cache update if the mutation fails
       queryClient.setQueryData(["todos"], context?.previousTodos);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["todos"] });
+    // },
   });
 
   const deleteTodoMutation = useMutation({
