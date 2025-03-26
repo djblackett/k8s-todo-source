@@ -32,14 +32,6 @@ function TodoList() {
     }
   }, [data]);
 
-  if (isPending) {
-    return <span>Loading...</span>;
-  }
-
-  if (isError) {
-    return <span>Error: {error.message}</span>;
-  }
-
   const handleOnDragEnd = (result: DropResult) => {
     // If there's no destination (dropped outside the list), do nothing
     if (!result.destination) return;
@@ -125,6 +117,14 @@ function TodoList() {
       });
     }
   };
+
+  if (isPending) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
 
   return (
     <div id="todo-list-container" className={`todo-list-container-${mode}`}>
