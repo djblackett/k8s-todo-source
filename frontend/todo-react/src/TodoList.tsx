@@ -146,6 +146,7 @@ function TodoList() {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           id="inner-list-container"
+                          tabIndex={-1}
                         >
                           <MemoizedListItem
                             key={"list-item-" + item.id}
