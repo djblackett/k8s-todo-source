@@ -205,7 +205,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": true})
 	})
 
-	r.DELETE("/todos", func(c *gin.Context) {
+	r.DELETE("/todos/completed", func(c *gin.Context) {
 		if err := db.Where("completed = ?", true).Delete(&Todo{}).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
