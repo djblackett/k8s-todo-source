@@ -10,7 +10,6 @@ import {
 import { resetList } from "./features/listItems/listItemsSlice";
 import { toggleColorMode } from "./features/colorMode/colorModeSlice";
 
-
 function App() {
   const mode = useSelector(selectColorMode);
   const image = useSelector(selectImage);
@@ -21,7 +20,6 @@ function App() {
     html.style.backgroundColor =
       mode === "light" ? "hsl(236, 33%, 92%)" : "hsl(235, 21%, 11%)";
   }, [mode]);
-
 
   function handleLogoChange() {
     dispatch(toggleColorMode());

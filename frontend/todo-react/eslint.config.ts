@@ -3,11 +3,13 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
     ...pluginReact.configs.flat.recommended,
+    ...pluginQuery.configs["flat/recommended"],
     settings: {
       react: {
         version: "detect",

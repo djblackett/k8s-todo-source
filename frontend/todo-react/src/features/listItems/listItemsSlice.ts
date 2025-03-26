@@ -1,10 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Config } from "../../config";
-import { v4 as randomUUID } from "uuid";
+import { v4 as uuidv4 } from "uuid";
+
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
 
 // const url = API_URL || "http://localhost:8000/todos";
 const url = "/todos";
-const initialData = [
+const initialData: Todo[] = [
   { id: "1234", text: "Welcome to your new todo list", completed: false },
   {
     id: "1235",
@@ -43,8 +48,8 @@ export const fetchTodos = async () => {
   }
 };
 
-export const addTodo = async (todo) => {
-  const newTodo = { ...todo, id: randomUUID };
+export const addTodo = async (todo: Todo) => {
+  const newTodo = { ...todo, id: uuidv4() };
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -62,7 +67,7 @@ export const addTodo = async (todo) => {
   }
 };
 
-export const completeTodo = async (todo) => {
+export const completeTodo = async (todo: Todo) => {
   const newTodo = { ...todo, completed: !todo.completed };
   const requestOptions = {
     method: "PUT",
@@ -79,7 +84,7 @@ export const completeTodo = async (todo) => {
   }
 };
 
-export const deleteTodo = async (todo) => {
+export const deleteTodo = async (todo: Todo) => {
   const requestOptions = {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -97,34 +102,35 @@ const options = {
     listItems: [],
   },
   reducers: {
-    addListItem(state, action) {
+    addListItem(
+      state: { listItems: Todo[] },
+      action: { payload: any } | undefined,
+    ) {
       state.listItems.push({
-        ...action.payload,
+        ...action?.payload,
       });
     },
-    addList(state, action) {
+    addList(state: { listItems: Todo[] }, action: { payload: Todo[] }) {
       state.listItems.push(...action.payload);
     },
-    removeListItem(state, action) {
+    removeListItem(state: { listItems: Todo[] }, action: { payload: string }) {
       state.listItems = state.listItems.filter(
         (item) => item.id !== String(action.payload),
       );
     },
-    reorderItems(state, action) {
+    reorderItems(state: { listItems: Todo[] }, action: { payload: Todo[] }) {
       state.listItems = action.payload;
-      return state;
     },
-    applyFilter(state, action) {
-      state.filteredListItems = action.payload;
-    },
-    completeItem(state, action) {
+    completeItem(state: { listItems: Todo[] }, action: { payload: any }) {
       let listItem = state.listItems.find((item) => item.id === action.payload);
-      listItem.completed = !listItem.completed;
+      if (listItem) {
+        listItem.completed = !listItem.completed;
+      }
     },
-    clearCompletedItems(state) {
+    clearCompletedItems(state: { listItems: Todo[] }) {
       state.listItems = state.listItems.filter((item) => !item.completed);
     },
-    resetList(state) {
+    resetList(state: { listItems: Todo[] }) {
       state.listItems = initialData;
     },
   },
@@ -132,7 +138,7 @@ const options = {
 
 const listItemsSlice = createSlice(options);
 
-export function selectListItems(state) {
+export function selectListItems(state: { listItems: { listItems: any } }) {
   return state.listItems.listItems;
 }
 
@@ -140,7 +146,6 @@ export const {
   addListItem,
   removeListItem,
   reorderItems,
-  applyFilter,
   completeItem,
   clearCompletedItems,
   resetList,
