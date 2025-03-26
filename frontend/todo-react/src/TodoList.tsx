@@ -7,9 +7,9 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectDataFilter } from "./features/dataFilter/dataFilterSlice";
-import { reorderItems, fetchTodos } from "./features/listItems/listItemsSlice";
+import { fetchTodos } from "./features/listItems/listUtils";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
 import { useQuery } from "@tanstack/react-query";
 import { Todo } from "./types/types";
@@ -17,7 +17,7 @@ import { Todo } from "./types/types";
 function TodoList() {
   const mode = useSelector(selectColorMode);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const dataFilterStore = useSelector(selectDataFilter);
   const [filteredData, setFilteredData] = useState<Todo[]>([]);
   const [dataFilter, setDataFilter] = useState(dataFilterStore);
@@ -34,7 +34,7 @@ function TodoList() {
     const items = Array.from(filteredData);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    dispatch(reorderItems(items));
+    // dispatch(reorderItems(items));
     setFilteredData(() => {
       return items;
     });

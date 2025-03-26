@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import { deleteCompletedTodos } from "./features/listItems/listItemsSlice";
+import { deleteCompletedTodos } from "./features/listItems/listUtils";
 import { changeFilter } from "./features/dataFilter/dataFilterSlice";
 import { Todo } from "./types/types";
 import { SyntheticEvent } from "react";

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import { addTodo } from "./features/listItems/listItemsSlice";
+import { addTodo } from "./features/listItems/listUtils";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

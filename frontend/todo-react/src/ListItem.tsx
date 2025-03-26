@@ -3,7 +3,7 @@ import React from "react";
 import Check from "./svg/icon-check.svg?react";
 import { useSelector } from "react-redux";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import { completeTodo, deleteTodo } from "./features/listItems/listItemsSlice";
+import { completeTodo, deleteTodo } from "./features/listItems/listUtils";
 import { Todo } from "./types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
