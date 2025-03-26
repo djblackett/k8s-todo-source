@@ -45,11 +45,9 @@
   border-radius: 0;
   filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 0.5));
 
-  @media (max-width: 700px) {
-  }
-
   &:hover #crossIcon {
-    visibility: visible;
+    // visibility: visible;
+    opacity: 1;
     pointer-events: initial;
   }
 
@@ -61,10 +59,11 @@
     border-radius: 50%;
     z-index: 5;
     &:focus {
-      border: 2px solid red;              
+      border: 2px solid red;
     }
     &:focus-within #crossIcon {
-      visibility: visible;
+      // visibility: visible;
+      opacity: 1;
     }
 
     #circle {
@@ -108,10 +107,12 @@
   #crossIcon {
     width: 6%;
     justify-self: flex-end;
-    visibility: hidden;
+    // visibility: hidden;
+    opacity: 0;
     pointer-events: none;
     &:focus {
-      visibility: visible;
+      // visibility: visible;
+      opacity: 1;
       border: 2px solid black;
     }
   }
