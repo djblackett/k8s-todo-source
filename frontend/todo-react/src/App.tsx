@@ -7,7 +7,6 @@ import {
   selectColorMode,
   selectImage,
 } from "./features/colorMode/colorModeSlice";
-import { resetList } from "./features/listItems/listItemsSlice";
 import { toggleColorMode } from "./features/colorMode/colorModeSlice";
 
 function App() {
@@ -65,13 +64,6 @@ function App() {
           </a>
           . Coded by <a href="#">David Andrea</a>.
         </div>
-        <button
-          className={`reset-${mode}`}
-          id="reset"
-          onClick={() => dispatch(resetList())}
-        >
-          Reset todo list
-        </button>
       </div>
     </main>
   );
