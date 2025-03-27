@@ -24,7 +24,7 @@ func updateTodoOrder(c *gin.Context) {
 	// Define a lightweight struct for binding only required fields (id and order_index)
 	var orders []struct {
 		Id         string `json:"id"`
-		OrderIndex int  `json:"order_index"`
+		OrderIndex int  `json:"orderIndex"`
 	}
 
 	// Bind incoming JSON payload to the 'orders' slice
