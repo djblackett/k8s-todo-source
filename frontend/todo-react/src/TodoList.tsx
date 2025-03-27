@@ -45,7 +45,7 @@ function TodoList() {
 
   const reorderTodosMutation = useMutation({
     mutationFn: saveTodoOrder,
-    onMutate: async (newOrder: { id: string; order_index: number }[]) => {
+    onMutate: async (newOrder: { id: string; orderIndex: number }[]) => {
       await queryClient.cancelQueries({ queryKey: ["todos"] });
 
       const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
@@ -53,7 +53,7 @@ function TodoList() {
       queryClient.setQueryData<Todo[]>(["todos"], (oldTodos) =>
         oldTodos?.map((todo) => {
           const updated = newOrder.find((n) => n.id === todo.id);
-          return updated ? { ...todo, order_index: updated.order_index } : todo;
+          return updated ? { ...todo, orderIndex: updated.orderIndex } : todo;
         }),
       );
 
