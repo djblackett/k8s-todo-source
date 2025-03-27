@@ -170,7 +170,7 @@ func main() {
 	})
 
 	// Endpoint to update the order of todos
-	r.PUT("/api/todos/order", updateTodoOrder)
+	r.PUT("/todos/order", updateTodoOrder)
 
 	r.GET("/todos/:id", func(c *gin.Context) {
 		var todo Todo
@@ -227,7 +227,7 @@ func main() {
 	r.PUT("/todos/:id", func(c *gin.Context) {
 		// Get model if exist
 		var todo Todo
-		if err := db.Where("id = ?", c.Param("id")).First(&todo).Error; err != nil {
+		if err := db.Where("id = ?", c.Param("id")).First(&todo).Error; err != nil { // this is line 230
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 			return
 		}
