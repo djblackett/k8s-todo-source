@@ -48,7 +48,6 @@ function ListItem({ item }: { item: Todo }) {
     //   queryClient.invalidateQueries({ queryKey: ["todos"] });
     // },
   });
-
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
     onSuccess: () => {

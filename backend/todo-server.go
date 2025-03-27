@@ -17,6 +17,40 @@ import (
 	"gorm.io/gorm"
 )
 
+
+var db *gorm.DB
+
+func updateTodoOrder(c *gin.Context) {
+	// You could bind to a slice of a lightweight struct if you only want id and order.
+	var orders []struct {
+		ID         uint `json:"id"`
+		OrderIndex int  `json:"order_index"`
+	}
+	if err := c.ShouldBindJSON(&orders); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	tx := db.Begin()
+	for _, order := range orders {
+		if err := tx.Model(&Todo{}).
+			Where("id = ?", order.ID).
+			Update("order_index", order.OrderIndex).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+
+
 func LoggerMiddleware() gin.HandlerFunc {
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
@@ -101,14 +135,16 @@ func main() {
 
 	r.GET("/todos", func(c *gin.Context) {
 		var todos []Todo
-		result := db.Find(&todos)
-		if result.Error != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		if err := db.Order("order_index ASC").Find(&todos).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
 		c.IndentedJSON(http.StatusOK, todos)
 	})
+
+	// Endpoint to update the order of todos
+	r.PUT("/api/todos/order", updateTodoOrder)
 
 	r.GET("/todos/:id", func(c *gin.Context) {
 		var todo Todo
@@ -120,38 +156,47 @@ func main() {
 	})
 
 	r.POST("/todos", func(c *gin.Context) {
-		var newTodo Todo
+	var newTodo Todo
 
-		if err := c.BindJSON(&newTodo); err != nil {
-			// Log the error and return a 400 response
-			c.Error(err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
-			return
-		}
+	// Bind the incoming JSON to newTodo
+	if err := c.BindJSON(&newTodo); err != nil {
+		c.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
 
-		// Check if the text length exceeds 140 characters
-		if len(newTodo.Text) > 140 {
-			err := fmt.Errorf("todo text exceeds 140 characters")
-			c.Error(err) // Add error to Gin context
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+	// Check if the text length exceeds 140 characters
+	if len(newTodo.Text) > 140 {
+		err := fmt.Errorf("todo text exceeds 140 characters")
+		c.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-		// Create the new todo in the database
-		if err := db.Create(&newTodo).Error; err != nil {
-			c.Error(err) // Log any database error
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create todo"})
-			return
-		}
+	// Calculate the new order_index by querying the current maximum
+	var maxOrder int
+	if err := db.Model(&Todo{}).
+		Select("COALESCE(MAX(order_index), -1)").
+		Row().Scan(&maxOrder); err != nil {
+		// If there is an error, we default to -1 so the first todo gets order 0
+		maxOrder = -1
+	}
+	newTodo.OrderIndex = maxOrder + 1
 
-		db.Create(&newTodo)
-		fmt.Println(newTodo)
+	// Create the new todo in the database
+	if err := db.Create(&newTodo).Error; err != nil {
+		c.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create todo"})
+		return
+	}
 
-		// Simple Publisher
-		nc.Publish("broadcaster", []byte("New todo created!"))
+	// Log and publish the creation event
+	fmt.Println(newTodo)
+	nc.Publish("broadcaster", []byte("New todo created!"))
 
-		c.IndentedJSON(http.StatusCreated, newTodo)
-	})
+	c.IndentedJSON(http.StatusCreated, newTodo)
+})
+
 
 	r.PUT("/todos/:id", func(c *gin.Context) {
 		// Get model if exist
@@ -238,7 +283,9 @@ type Todo struct {
 	Id        string    `json:"id"`
 	Text      string `json:"text"`
 	Completed bool   `json:"completed"`
+	OrderIndex int	`json:"orderIndex"`
 }
+
 
 type UpdateTodoInput struct {
 	Id        string  `json:"title"`

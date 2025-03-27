@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { selectDataFilter } from "./features/dataFilter/dataFilterSlice";
 import { fetchTodos } from "./features/listItems/listUtils";
 import { selectColorMode } from "./features/colorMode/colorModeSlice";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Todo } from "./types/types";
 
 function TodoList() {
@@ -27,6 +27,50 @@ function TodoList() {
     queryFn: fetchTodos,
   });
 
+  const queryClient = useQueryClient();
+
+  const saveTodoOrder = async (
+    updatedOrder: { id: string; order_index: number }[],
+  ) => {
+    const response = await fetch("/api/todos/order", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedOrder),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update order");
+    }
+    return response.json();
+  };
+
+  const reorderTodosMutation = useMutation({
+    mutationFn: saveTodoOrder,
+    onMutate: async (updatedOrder) => {
+      // Cancel any outgoing queries for todos
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
+      // Snapshot the previous todos
+      const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
+      // Optimistically update the cache with the new order
+      queryClient.setQueryData(["todos"], (oldTodos: Todo[] = []) => {
+        const idToTodo = new Map(oldTodos.map((todo) => [todo.id, todo]));
+        // Reconstruct the todos array in the new order
+        const newOrdered = updatedOrder
+          .map(({ id }) => idToTodo.get(id))
+          .filter(Boolean) as Todo[];
+        return newOrdered;
+      });
+      return { previousTodos };
+    },
+    onError: (error, updatedOrder, context) => {
+      // Roll back to the previous state if the mutation fails
+      queryClient.setQueryData(["todos"], context?.previousTodos);
+    },
+    onSettled: () => {
+      // Refetch to ensure consistency with the server
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
   const handleOnDragEnd = (result: DropResult) => {
     // If there's no destination (dropped outside the list), do nothing
     if (!result.destination) return;
@@ -35,9 +79,18 @@ function TodoList() {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     // dispatch(reorderItems(items));
-    setFilteredData(() => {
-      return items;
-    });
+
+    setFilteredData(items);
+
+    // Prepare updated order data for the server:
+    const updatedOrder = items.map((todo, index) => ({
+      id: todo.id,
+      order_index: index, // set new order based on index
+    }));
+
+    // Do I need a different mutation for this?
+    reorderTodosMutation.mutate(updatedOrder);
+    // completeTodoMutation.mutate(updatedOrder);
   };
 
   // useEffect to run once the component mounts
