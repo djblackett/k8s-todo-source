@@ -44,6 +44,7 @@
   align-items: center;
   border-radius: 0;
   filter: drop-shadow(0.35rem 0.35rem 0.4rem rgba(0, 0, 0, 0.5));
+  // box-sizing: border-box;
 
   &:hover #crossIcon {
     // visibility: visible;

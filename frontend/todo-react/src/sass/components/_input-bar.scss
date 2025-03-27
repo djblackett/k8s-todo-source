@@ -14,16 +14,18 @@
   }
 }
 
-
 #input-component {
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1;
-  height: variables.$listItemHeight;
+  height: 65px;
   width: calc(50% + 20px);
   margin-bottom: 20px;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  // box-sizing: border-box;
+  box-shadow:
+    rgba(0, 0, 0, 0.19) 0px 10px 20px,
+    rgba(0, 0, 0, 0.23) 0px 6px 6px;
   border-radius: 5px;
   overflow: hidden;
   padding: 10px 0;
@@ -85,7 +87,9 @@
     padding: 0 16px;
     font-weight: bold;
     z-index: 1;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 2px 2px;
+    box-shadow:
+      rgba(0, 0, 0, 0.19) 0px 10px 20px,
+      rgba(0, 0, 0, 0.23) 0px 2px 2px;
     @media (max-width: 700px) {
       font-size: 14px;
     }
