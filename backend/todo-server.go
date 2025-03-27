@@ -21,61 +21,40 @@ import (
 var db *gorm.DB
 
 func updateTodoOrder(c *gin.Context) {
-	// Define a lightweight struct for binding only required fields (id and order_index)
 	var orders []struct {
 		Id         string `json:"id"`
-		OrderIndex int  `json:"orderIndex"`
+		OrderIndex int    `json:"orderIndex"`
 	}
 
-	// Bind incoming JSON payload to the 'orders' slice
 	if err := c.ShouldBindJSON(&orders); err != nil {
-		log.Printf("[ERROR] JSON binding failed: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Start a database transaction to ensure atomicity (all or nothing)
 	tx := db.Begin()
-
 	for _, order := range orders {
-		// Log each update attempt
-		log.Printf("[INFO] Updating Todo ID %s to OrderIndex %d", order.Id, order.OrderIndex)
-
-		// Perform the update query
-		result := tx.Model(&Todo{}).
+		if err := tx.Model(&Todo{}).
 			Where("id = ?", order.Id).
-			Update("order_index", order.OrderIndex)
-
-		// Check for errors during the update
-		if result.Error != nil {
-			log.Printf("[ERROR] Failed updating Todo ID %s: %v", order.Id, result.Error)
+			Update("order_index", order.OrderIndex).Error; err != nil {
 			tx.Rollback()
-			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-			return
-		}
-
-		// Check if any row was affected, indicating a match was found
-		if result.RowsAffected == 0 {
-			log.Printf("[WARN] No Todo found with ID %s", order.Id)
-			tx.Rollback()
-			c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Todo ID %s not found", order.Id)})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 	}
 
-	// Commit the transaction if all updates were successful
 	if err := tx.Commit().Error; err != nil {
-		log.Printf("[ERROR] Transaction commit failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	log.Printf("[INFO] Successfully updated todo orders")
-	c.Status(http.StatusOK)
+	var todos []Todo
+	if err := db.Order("order_index ASC").Find(&todos).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, todos) // return updated todos
 }
-
-
-
 
 func LoggerMiddleware() gin.HandlerFunc {
 	logger := log.New(os.Stdout, "", log.LstdFlags)

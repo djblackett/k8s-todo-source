@@ -30,18 +30,19 @@ function TodoList() {
   const queryClient = useQueryClient();
 
   const saveTodoOrder = async (
-    updatedOrder: { id: string; orderIndex: number }[],
-  ) => {
-    const response = await fetch("/todos/order", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedOrder),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to update order");
-    }
-    return response.json();
-  };
+  updatedOrder: { id: string; orderIndex: number }[],
+) => {
+  const response = await fetch("/todos/order", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedOrder),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to update order");
+  }
+  return response.json(); // <-- now works perfectly!
+};
+
 
   const reorderTodosMutation = useMutation({
     mutationFn: saveTodoOrder,
