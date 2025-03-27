@@ -151,31 +151,33 @@ function TodoList() {
               ref={provided.innerRef}
             >
               {filteredData &&
-                filteredData.map((item: Todo, i: number) => {
-                  return (
-                    <Draggable
-                      key={item.id}
-                      index={i}
-                      draggableId={String(item.id)}
-                    >
-                      {(provided) => (
-                        <li
-                          key={"li-" + item.id}
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          id="inner-list-container"
-                          tabIndex={-1}
-                        >
-                          <MemoizedListItem
-                            key={"list-item-" + item.id}
-                            item={item}
-                          />
-                        </li>
-                      )}
-                    </Draggable>
-                  );
-                })}
+                filteredData
+                  .sort((a, b) => a.orderIndex - b.orderIndex)
+                  .map((item: Todo, i: number) => {
+                    return (
+                      <Draggable
+                        key={item.id}
+                        index={i}
+                        draggableId={String(item.id)}
+                      >
+                        {(provided) => (
+                          <li
+                            key={"li-" + item.id}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            id="inner-list-container"
+                            tabIndex={-1}
+                          >
+                            <MemoizedListItem
+                              key={"list-item-" + item.id}
+                              item={item}
+                            />
+                          </li>
+                        )}
+                      </Draggable>
+                    );
+                  })}
               {provided.placeholder}
             </ul>
           )}
