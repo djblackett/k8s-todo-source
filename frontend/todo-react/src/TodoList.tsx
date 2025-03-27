@@ -19,10 +19,10 @@ function TodoList() {
 
   // const dispatch = useDispatch();
   const dataFilterStore = useSelector(selectDataFilter);
-  const [filteredData, setFilteredData] = useState<Todo[]>([]);
+  // const [filteredData, setFilteredData] = useState<Todo[]>([]);
   const [dataFilter, setDataFilter] = useState(dataFilterStore);
 
-  const { isPending, isError, data, error } = useQuery({
+  const { isPending, isError, data, error } = useQuery<Todo[]>({
     queryKey: ["todos"],
     queryFn: fetchTodos,
   });
@@ -65,55 +65,39 @@ function TodoList() {
     },
   });
 
+  const filteredData =
+    dataFilter === "all"
+      ? data
+      : data?.filter((todo: Todo) =>
+          dataFilter === "active" ? !todo.completed : todo.completed,
+        );
+
   const handleOnDragEnd = (result: DropResult) => {
-    // If there's no destination (dropped outside the list), do nothing
-    if (!result.destination) return;
+    if (!result.destination || !filteredData) return;
 
     const items = Array.from(filteredData);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    // dispatch(reorderItems(items));
 
-    setFilteredData(items);
-
-    // Prepare updated order data for the server:
     const updatedOrder = items.map((todo, index) => ({
       id: todo.id,
-      orderIndex: index, // set new order based on index
+      orderIndex: index,
     }));
 
-    // Do I need a different mutation for this?
+    queryClient.setQueryData<Todo[]>(["todos"], (oldTodos) =>
+      oldTodos?.map((todo) => {
+        const updated = updatedOrder.find((n) => n.id === todo.id);
+        return updated ? { ...todo, orderIndex: updated.orderIndex } : todo;
+      }),
+    );
+
     reorderTodosMutation.mutate(updatedOrder);
-    // completeTodoMutation.mutate(updatedOrder);
   };
 
   // useEffect to run once the component mounts
   useEffect(() => {
     localStorage.setItem("mode", JSON.stringify({ colorMode: mode }));
   }, [mode]);
-
-  useEffect(() => {
-    // Every time the list or filter changes, the list gets refiltered to match the new filter/list
-    if (dataFilter === "all") {
-      setFilteredData(() => {
-        return data;
-      });
-    } else if (dataFilter === "active") {
-      setFilteredData(() => {
-        return data.filter(
-          (entry: { completed: boolean }) => entry.completed === false,
-        );
-      });
-    } else if (dataFilter === "completed") {
-      setFilteredData(() => {
-        return data.filter(
-          (entry: { completed: boolean }) => entry.completed === true,
-        );
-      });
-    } else {
-      return;
-    }
-  }, [data, dataFilter]);
 
   const handleListChange = (e: { target: any }) => {
     // Handles the style changes based on the selection in the info pane
