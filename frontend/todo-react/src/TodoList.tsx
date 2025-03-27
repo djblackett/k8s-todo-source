@@ -30,7 +30,7 @@ function TodoList() {
   const queryClient = useQueryClient();
 
   const saveTodoOrder = async (
-    updatedOrder: { id: string; order_index: number }[],
+    updatedOrder: { id: string; orderIndex: number }[],
   ) => {
     const response = await fetch("/todos/order", {
       method: "PUT",
@@ -45,20 +45,23 @@ function TodoList() {
 
   const reorderTodosMutation = useMutation({
     mutationFn: saveTodoOrder,
-    onMutate: async (updatedOrder) => {
-      // Cancel any outgoing queries for todos
+    onMutate: async (newOrder) => {
       await queryClient.cancelQueries({ queryKey: ["todos"] });
-      // Snapshot the previous todos
-      const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
-      // Optimistically update the cache with the new order
-      queryClient.setQueryData(["todos"], (oldTodos: Todo[] = []) => {
-        const idToTodo = new Map(oldTodos.map((todo) => [todo.id, todo]));
-        // Reconstruct the todos array in the new order
-        const newOrdered = updatedOrder
-          .map(({ id }) => idToTodo.get(id))
-          .filter(Boolean) as Todo[];
-        return newOrdered;
-      });
+
+      const previousTodos = queryClient.getQueryData(["todos"]);
+
+      queryClient.setQueryData<Todo[]>(
+        ["todos"],
+        (oldTodos: Todo[] | undefined) =>
+          oldTodos?.map((todo: Todo) => ({
+            ...todo,
+            orderIndex:
+              newOrder.find(
+                (n: { id: string; orderIndex: number }) => n.id === todo.id,
+              )?.orderIndex ?? todo.orderIndex,
+          })),
+      );
+
       return { previousTodos };
     },
     onError: (error, updatedOrder, context) => {
@@ -85,7 +88,7 @@ function TodoList() {
     // Prepare updated order data for the server:
     const updatedOrder = items.map((todo, index) => ({
       id: todo.id,
-      order_index: index, // set new order based on index
+      orderIndex: index, // set new order based on index
     }));
 
     // Do I need a different mutation for this?
