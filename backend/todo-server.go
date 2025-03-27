@@ -23,7 +23,7 @@ var db *gorm.DB
 func updateTodoOrder(c *gin.Context) {
 	// Define a lightweight struct for binding only required fields (id and order_index)
 	var orders []struct {
-		Id         uint `json:"id"`
+		Id         string `json:"id"`
 		OrderIndex int  `json:"order_index"`
 	}
 
