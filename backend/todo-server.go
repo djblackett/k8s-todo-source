@@ -39,7 +39,7 @@ func updateTodoOrder(c *gin.Context) {
 
 	for _, order := range orders {
 		// Log each update attempt
-		log.Printf("[INFO] Updating Todo ID %d to OrderIndex %d", order.Id, order.OrderIndex)
+		log.Printf("[INFO] Updating Todo ID %s to OrderIndex %d", order.Id, order.OrderIndex)
 
 		// Perform the update query
 		result := tx.Model(&Todo{}).
@@ -48,7 +48,7 @@ func updateTodoOrder(c *gin.Context) {
 
 		// Check for errors during the update
 		if result.Error != nil {
-			log.Printf("[ERROR] Failed updating Todo ID %d: %v", order.Id, result.Error)
+			log.Printf("[ERROR] Failed updating Todo ID %s: %v", order.Id, result.Error)
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 			return
@@ -58,7 +58,7 @@ func updateTodoOrder(c *gin.Context) {
 		if result.RowsAffected == 0 {
 			log.Printf("[WARN] No Todo found with ID %d", order.Id)
 			tx.Rollback()
-			c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Todo ID %d not found", order.Id)})
+			c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Todo ID %s not found", order.Id)})
 			return
 		}
 	}
