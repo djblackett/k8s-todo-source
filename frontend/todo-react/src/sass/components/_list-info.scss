@@ -27,12 +27,22 @@
     height: 35px;
     font-size: 14px;
     border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+    box-shadow:
+      rgba(0, 0, 0, 0.19) 0px 10px 20px,
       rgba(0, 0, 0, 0.23) 0px 6px 6px;
   }
 
   @media (max-width: 400px) {
     font-size: 12px;
+  }
+
+  .list-info-text {
+    font-size: 1rem;
+    color: inherit;
+    padding: 1px 6px 1px 6px;
+    @media (max-width: 700px) {
+      font-size: 14px;
+    }
   }
 
   #completion-status {
@@ -84,7 +94,6 @@
 
   #clear-button {
     border: none;
-    // outline: none;
     background-color: transparent;
     font-family: "Josefin Sans", sans-serif;
     &:hover {

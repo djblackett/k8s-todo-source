@@ -61,7 +61,7 @@ function ListInfo({ listChange, listItems }: ListInfoProps) {
       className={`list-info-${mode}`}
       data-testid="list-info-component-test"
     >
-      <p>
+      <p className="items-left-text" data-testid="items-left-test">
         {itemsLeft} item{itemsLeft !== 1 && "s"} left
       </p>
       <div id="completion-status">
