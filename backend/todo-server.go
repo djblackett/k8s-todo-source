@@ -123,7 +123,8 @@ func main() {
 
 	fmt.Println(psqlInfo)
 
-	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
+	db, err = gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
+
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -305,15 +306,10 @@ func main() {
 }
 
 type Todo struct {
-	gorm.Model
 	Id        string    `json:"id"`
 	Text      string `json:"text"`
 	Completed bool   `json:"completed"`
 	OrderIndex int	`json:"orderIndex"`
-	ID         uint      `json:"-"`
-    CreatedAt  time.Time `json:"-"`
-    UpdatedAt  time.Time `json:"-"`
-    DeletedAt  gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
 
