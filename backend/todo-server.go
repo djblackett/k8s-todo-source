@@ -21,30 +21,59 @@ import (
 var db *gorm.DB
 
 func updateTodoOrder(c *gin.Context) {
-	// You could bind to a slice of a lightweight struct if you only want id and order.
-	var orders []Todo
+	// Define a lightweight struct for binding only required fields (id and order_index)
+	var orders []struct {
+		Id         uint `json:"id"`
+		OrderIndex int  `json:"order_index"`
+	}
+
+	// Bind incoming JSON payload to the 'orders' slice
 	if err := c.ShouldBindJSON(&orders); err != nil {
+		log.Printf("[ERROR] JSON binding failed: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	// Start a database transaction to ensure atomicity (all or nothing)
 	tx := db.Begin()
+
 	for _, order := range orders {
-		if err := tx.Model(&Todo{}).
+		// Log each update attempt
+		log.Printf("[INFO] Updating Todo ID %d to OrderIndex %d", order.Id, order.OrderIndex)
+
+		// Perform the update query
+		result := tx.Model(&Todo{}).
 			Where("id = ?", order.Id).
-			Update("order_index", order.OrderIndex).Error; err != nil {
+			Update("order_index", order.OrderIndex)
+
+		// Check for errors during the update
+		if result.Error != nil {
+			log.Printf("[ERROR] Failed updating Todo ID %d: %v", order.Id, result.Error)
 			tx.Rollback()
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return
+		}
+
+		// Check if any row was affected, indicating a match was found
+		if result.RowsAffected == 0 {
+			log.Printf("[WARN] No Todo found with ID %d", order.Id)
+			tx.Rollback()
+			c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Todo ID %d not found", order.Id)})
 			return
 		}
 	}
+
+	// Commit the transaction if all updates were successful
 	if err := tx.Commit().Error; err != nil {
+		log.Printf("[ERROR] Transaction commit failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	log.Printf("[INFO] Successfully updated todo orders")
 	c.Status(http.StatusOK)
 }
+
 
 
 
