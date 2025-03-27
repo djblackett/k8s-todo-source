@@ -32,7 +32,7 @@ function TodoList() {
   const saveTodoOrder = async (
     updatedOrder: { id: string; order_index: number }[],
   ) => {
-    const response = await fetch("/api/todos/order", {
+    const response = await fetch("/todos/order", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedOrder),
