@@ -23,7 +23,7 @@ var db *gorm.DB
 func updateTodoOrder(c *gin.Context) {
 	// You could bind to a slice of a lightweight struct if you only want id and order.
 	var orders []struct {
-		ID         uint `json:"id"`
+		Id         string `json:"id"`
 		OrderIndex int  `json:"order_index"`
 	}
 	if err := c.ShouldBindJSON(&orders); err != nil {
@@ -34,7 +34,7 @@ func updateTodoOrder(c *gin.Context) {
 	tx := db.Begin()
 	for _, order := range orders {
 		if err := tx.Model(&Todo{}).
-			Where("id = ?", order.ID).
+			Where("id = ?", order.Id).
 			Update("order_index", order.OrderIndex).Error; err != nil {
 			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
