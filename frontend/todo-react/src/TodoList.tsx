@@ -68,10 +68,6 @@ function TodoList() {
       // Roll back to the previous state if the mutation fails
       queryClient.setQueryData(["todos"], context?.previousTodos);
     },
-    onSettled: () => {
-      // Refetch to ensure consistency with the server
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
   });
 
   const handleOnDragEnd = (result: DropResult) => {
