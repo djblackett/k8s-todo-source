@@ -56,7 +56,7 @@ func updateTodoOrder(c *gin.Context) {
 
 		// Check if any row was affected, indicating a match was found
 		if result.RowsAffected == 0 {
-			log.Printf("[WARN] No Todo found with ID %d", order.Id)
+			log.Printf("[WARN] No Todo found with ID %s", order.Id)
 			tx.Rollback()
 			c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Todo ID %s not found", order.Id)})
 			return
