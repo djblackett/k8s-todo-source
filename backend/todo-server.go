@@ -22,10 +22,7 @@ var db *gorm.DB
 
 func updateTodoOrder(c *gin.Context) {
 	// You could bind to a slice of a lightweight struct if you only want id and order.
-	var orders []struct {
-		Id         string `json:"id"`
-		OrderIndex int  `json:"order_index"`
-	}
+	var orders []Todo
 	if err := c.ShouldBindJSON(&orders); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -284,6 +281,10 @@ type Todo struct {
 	Text      string `json:"text"`
 	Completed bool   `json:"completed"`
 	OrderIndex int	`json:"orderIndex"`
+	ID         uint      `json:"-"`
+    CreatedAt  time.Time `json:"-"`
+    UpdatedAt  time.Time `json:"-"`
+    DeletedAt  gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
 
