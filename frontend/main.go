@@ -13,19 +13,24 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+type Config struct {
+    Backend string
+    APIURL  string
+    Port    string
+}
+
+func loadConfig() Config {
+    return Config{
+        Backend: os.Getenv("BACKEND"),
+        APIURL:  os.Getenv("API_URL"),
+        Port:    os.Getenv("PORT"),
+    }
+}
+
 func main() {
 
-	_, err := readTimestamp()
-	if err != nil {
-		writeTimestamp()
-		getImage()
-	}
+	config := loadConfig()
 
-	backend := os.Getenv("BACKEND")
-	apiUrl := os.Getenv("API_URL")
-
-	fmt.Println(backend)
-	fmt.Println(apiUrl)
 
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -41,7 +46,7 @@ func main() {
 	http.Handle("/api/metrics", promhttp.Handler())
 
 	todosHandler := func(c *gin.Context) {
-		resp, err := http.Get(backend + "/todos")
+		resp, err := http.Get(config.Backend + "/todos")
 		if err != nil {
 			log.Printf("Failed to fetch todos: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
@@ -66,7 +71,7 @@ func main() {
 	}
 
 	healthzHandler := func(c *gin.Context) {
-		resp, err := http.Get("http://" + backend + "/frontend-check")
+		resp, err := http.Get("http://" + config.Backend + "/frontend-check")
 		if err != nil {
 			log.Printf("Failed to connect to backend: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to backend"})
@@ -85,7 +90,7 @@ func main() {
 
 	deleteHandler :=  func(c *gin.Context) {
 			id := c.Param("id")
-			resp, err := http.Get(backend + "/todos/" + id)
+			resp, err := http.Get(config.Backend + "/todos/" + id)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
 				return
