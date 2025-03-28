@@ -41,9 +41,9 @@ func loadConfig() (Config, error) {
 func main() {
 
 	config, err := loadConfig()
-if err != nil {
-    log.Fatal(err)
-}
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	r := gin.Default()
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{

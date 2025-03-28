@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+
 	"net/http"
 	"os"
-	"strconv"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -19,6 +18,33 @@ import (
 
 
 var db *gorm.DB
+
+type Config struct {
+    HOST	 string
+	PASSWORD string
+	POSTGRES_PORT string
+	DB_NAME  string
+	USER     string
+	NATS_URL string
+	API_URL  string
+    PORT   string
+}
+
+func loadConfig() (Config, error) {
+    
+	cfg := Config{
+        HOST:    os.Getenv("HOST"),
+		PASSWORD: os.Getenv("PASSWORD"),
+		POSTGRES_PORT: os.Getenv("POSTGRES_PORT"),
+		DB_NAME: os.Getenv("DB_NAME"),
+		USER:    os.Getenv("USER"),
+		NATS_URL: os.Getenv("NATS_URL"),
+		API_URL:  os.Getenv("API_URL"),
+        PORT:    os.Getenv("PORT"),
+    }
+
+	return cfg, nil
+}
 
 func updateTodoOrder(c *gin.Context) {
 	var orders []struct {
@@ -56,51 +82,21 @@ func updateTodoOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, todos) // return updated todos
 }
 
-func LoggerMiddleware() gin.HandlerFunc {
-	logger := log.New(os.Stdout, "", log.LstdFlags)
-
-	return func(c *gin.Context) {
-
-		if c.Request.URL.Path == "/healthz" || c.Request.URL.Path == "/frontend-check" {
-			c.Next()
-			return
-		}
-
-		start := time.Now()
-		c.Next()
-
-		// Log errors if any
-		if len(c.Errors) > 0 {
-			for _, e := range c.Errors {
-				logger.Printf("Error: %v", e.Err)
-			}
-		}
-
-		duration := time.Since(start)
-		logger.Printf("Request - Method: %s | Status: %d | Duration: %v", c.Request.Method, c.Writer.Status(), duration)
-	}
-}
-
 func main() {
 
-	var host = os.Getenv("HOST")
-	var password = os.Getenv("PASSWORD") // switch to encrypted secret later
-	postgresPort, err := strconv.Atoi(os.Getenv("POSTGRES_PORT"))
+	config, err := loadConfig()
 	if err != nil {
-		panic("Invalid port number")
+		log.Fatal(err)
 	}
-	var dbname = os.Getenv("DB_NAME")
-	var user = os.Getenv("USER")
+
 
 	// Connect to a server
-	var natsUrl = os.Getenv("NATS_URL")
-	nc, _ := nats.Connect(natsUrl)
+	nc, _ := nats.Connect(config.NATS_URL)
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, postgresPort, user, password, dbname)
+		config.HOST, config.POSTGRES_PORT, config.USER, config.PASSWORD, config.DB_NAME)
 
-	fmt.Println(psqlInfo)
 
 	db, err = gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 
@@ -275,7 +271,7 @@ func main() {
 		}
 	})
 
-	port := os.Getenv("PORT")
+	port := config.PORT
 	if port == "" {
 		port = "8000"
 	}
