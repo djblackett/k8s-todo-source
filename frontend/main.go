@@ -7,10 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	ginprometheus "github.com/zsais/go-gin-prometheus"
 )
 
 type Config struct {
@@ -19,31 +18,40 @@ type Config struct {
     Port    string
 }
 
-func loadConfig() Config {
-    return Config{
+func loadConfig() (Config, error) {
+    
+	cfg := Config{
         Backend: os.Getenv("BACKEND"),
         APIURL:  os.Getenv("API_URL"),
         Port:    os.Getenv("PORT"),
     }
+
+	if cfg.Backend == "" {
+		return cfg, fmt.Errorf("BACKEND environment variable is required")
+	}  
+
+	if cfg.APIURL == "" {
+		return cfg, fmt.Errorf("API_URL environment variable is required")
+	}
+
+	return cfg, nil
 }
 
 func main() {
 
-	config := loadConfig()
-
-
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(dir)
+	config, err := loadConfig()
+if err != nil {
+    log.Fatal(err)
+}
 
 	r := gin.Default()
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
 		SkipPaths: []string{"/healthz"},
 	}))
 
-	http.Handle("/api/metrics", promhttp.Handler())
+	 // Add Prometheus metrics middleware
+    p := ginprometheus.NewPrometheus("gin")
+    p.Use(r)
 
 	todosHandler := func(c *gin.Context) {
 		resp, err := http.Get(config.Backend + "/todos")
@@ -90,8 +98,9 @@ func main() {
 
 	deleteHandler :=  func(c *gin.Context) {
 			id := c.Param("id")
-			resp, err := http.Get(config.Backend + "/todos/" + id)
+			resp, err := http.NewRequest(http.MethodDelete, config.Backend + "/todos/" + id, nil)
 			if err != nil {
+				log.Printf("Failed to delete todo: %v", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
 				return
 			}
@@ -123,7 +132,7 @@ func main() {
 		c.File("./build/index.html")
 	})
 
-	port := os.Getenv("PORT")
+	port := config.Port
 	if port == "" {
 		port = "8080"
 	}
