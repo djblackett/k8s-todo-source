@@ -33,8 +33,6 @@ func main() {
 	}
 	fmt.Println(dir)
 
-	go startTimestampWatcher()
-
 	r := gin.Default()
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
 		SkipPaths: []string{"/healthz"},
@@ -44,21 +42,22 @@ func main() {
 
 	todosHandler := func(c *gin.Context) {
 		resp, err := http.Get(backend + "/todos")
-
 		if err != nil {
+			log.Printf("Failed to fetch todos: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
 			return
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
+			log.Printf("Unexpected status code from backend: %d", resp.StatusCode)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Remote server returned non-200 status"})
 			return
 		}
 
-		// Decode the JSON response into the struct
 		var data Todo
 		if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+			log.Printf("Failed to decode JSON response: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode JSON response"})
 			return
 		}
@@ -82,15 +81,9 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"success": "Successfully connected to backend"})
-
 	}
 
-	// API routes under /api
-	api := r.Group("/api")
-	{
-		api.GET("/todos", todosHandler)
-		api.GET("/healthz", healthzHandler)
-		api.DELETE("/todos/:id", func(c *gin.Context) {
+	deleteHandler :=  func(c *gin.Context) {
 			id := c.Param("id")
 			resp, err := http.Get(backend + "/todos/" + id)
 			if err != nil {
@@ -99,10 +92,14 @@ func main() {
 			}
 			defer resp.Body.Close()
 			c.JSON(http.StatusOK, gin.H{"success": "Successfully deleted todo"})
-		})
+		}
 
-
-		// Add other API endpoints here
+	// API routes under /api
+	api := r.Group("/api")
+	{
+		api.GET("/todos", todosHandler)
+		api.GET("/healthz", healthzHandler)
+		api.DELETE("/todos/:id", deleteHandler)
 	}
 
 	
@@ -128,7 +125,7 @@ func main() {
 
 	fmt.Println("*****************************")
 	fmt.Printf("Server started in port %s\n", port)
-	fmt.Println("*****************************\n")
+	fmt.Println("*****************************")
 
 	r.Run(":" + port)
 }
