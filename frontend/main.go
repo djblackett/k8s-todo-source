@@ -14,26 +14,21 @@ import (
 )
 
 type Config struct {
-    Backend string
+    BACKEND_URL string
     APIURL  string
-    Port    string
+    PORT    string
 }
 
 func loadConfig() (Config, error) {
     
 	cfg := Config{
-        Backend: os.Getenv("BACKEND"),
-        APIURL:  os.Getenv("API_URL"),
-        Port:    os.Getenv("PORT"),
+        BACKEND_URL: os.Getenv("BACKEND"),
+        PORT:    os.Getenv("PORT"),
     }
 
-	if cfg.Backend == "" {
+	if cfg.BACKEND_URL == "" {
 		return cfg, fmt.Errorf("BACKEND environment variable is required")
 	}  
-
-	if cfg.APIURL == "" {
-		return cfg, fmt.Errorf("API_URL environment variable is required")
-	}
 
 	return cfg, nil
 }
@@ -58,7 +53,7 @@ func main() {
 
 
 	todosHandler := func(c *gin.Context) {
-		resp, err := httpClient.Get(config.Backend + "/todos")
+		resp, err := httpClient.Get(config.BACKEND_URL + "/todos")
 		if err != nil {
 			log.Printf("Failed to fetch todos: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
@@ -83,7 +78,7 @@ func main() {
 	}
 
 	healthzHandler := func(c *gin.Context) {
-		resp, err := httpClient.Get("http://" + config.Backend + "/frontend-check")
+		resp, err := httpClient.Get("http://" + config.BACKEND_URL + "/frontend-check")
 		if err != nil {
 			log.Printf("Failed to connect to backend: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to backend"})
@@ -102,7 +97,7 @@ func main() {
 
 	deleteHandler :=  func(c *gin.Context) {
 			id := c.Param("id")
-			resp, err := http.NewRequest(http.MethodDelete, config.Backend + "/todos/" + id, nil)
+			resp, err := http.NewRequest(http.MethodDelete, config.BACKEND_URL + "/todos/" + id, nil)
 			if err != nil {
 				log.Printf("Failed to delete todo: %v", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
@@ -136,7 +131,7 @@ func main() {
 		c.File("./build/index.html")
 	})
 
-	port := config.Port
+	port := config.PORT
 	if port == "" {
 		port = "8080"
 	}
