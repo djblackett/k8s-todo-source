@@ -103,8 +103,8 @@ func main() {
 	}
 
 	
-	r.Static("/assets", "./build/assets")
-    r.Static("/images", "./build/images")
+	r.StaticFS("/assets", http.Dir("./build/assets"))
+	r.StaticFS("/images", http.Dir("./build/images"))
 	r.StaticFile("/config.js", "./build/config.js")
 	r.StaticFile("/favicon.ico", "./build/favicon.ico")
 	r.StaticFile("/logo192.png", "./build/logo192.png")
