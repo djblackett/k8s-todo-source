@@ -28,3 +28,55 @@ NATS
 ### Service mesh
 
 Linkerd
+
+Project Overview: React Todo Application with Go Backend
+
+Frontend (React)
+
+Built using React with TypeScript.
+
+Implements a drag-and-drop feature for reordering todo items using react-beautiful-dnd.
+
+State management utilizes React Query (@tanstack/react-query) to handle server state and data fetching.
+
+Supports optimistic UI updates for seamless user interaction, preventing flicker and providing instant feedback when dragging todos.
+
+Uses Redux for managing UI state (such as color modes and data filters).
+
+Provides filtering functionality ("all", "active", "completed") for todos.
+
+UI responds dynamically to user preferences (e.g., dark/light mode).
+
+Web Server (Go)
+
+Serves frontend static assets and may provide additional web services (exact responsibilities [...]).
+
+Likely deployed on Kubernetes infrastructure or similar.
+
+Backend API Server (Go)
+
+Built using the Gin web framework for HTTP request handling.
+
+Database interactions handled by GORM, interfacing with PostgreSQL.
+
+Uses UUIDs (strings) as primary keys for todo items.
+
+Implements CRUD operations: creation, retrieval, updating, deletion of todos.
+
+Provides endpoints to update the order of todos in batch.
+
+Includes detailed logging for error handling and debugging.
+
+Implements transaction handling in database updates to maintain consistency and atomicity.
+
+Publishes events via NATS messaging system upon certain operations (e.g., creating, updating, or deleting a todo).
+
+Development and Deployment
+
+Frontend and backend developed separately, communicating through clearly defined RESTful API endpoints.
+
+Backend may be deployed separately from frontend assets ([exact deployment details here...]).
+
+Infrastructure potentially leverages Kubernetes, ArgoCD, Fly.io, or GitHub Actions for CI/CD pipelines and deployment automation ([confirm or expand as needed]).
+
+Future improvements or pending features include [...].
