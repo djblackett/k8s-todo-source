@@ -1,33 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
+
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
-
-type Config struct {
-    Backend string
-    APIURL  string
-    Port    string
-}
-
-func loadConfig() Config {
-    return Config{
-        Backend: os.Getenv("BACKEND"),
-        APIURL:  os.Getenv("API_URL"),
-        Port:    os.Getenv("PORT"),
-    }
-}
 
 func main() {
 
@@ -37,10 +21,11 @@ func main() {
 		getImage()
 	}
 
-	config := loadConfig()
+	backend := os.Getenv("BACKEND")
+	apiUrl := os.Getenv("API_URL")
 
-	fmt.Println(config.Backend)
-	fmt.Println(config.APIURL)
+	fmt.Println(backend)
+	fmt.Println(apiUrl)
 
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -58,7 +43,7 @@ func main() {
 	http.Handle("/api/metrics", promhttp.Handler())
 
 	todosHandler := func(c *gin.Context) {
-		resp, err := http.Get(config.Backend + "/todos")
+		resp, err := http.Get(backend + "/todos")
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
@@ -82,7 +67,7 @@ func main() {
 	}
 
 	healthzHandler := func(c *gin.Context) {
-		resp, err := http.Get("http://" + config.Backend + "/frontend-check")
+		resp, err := http.Get("http://" + backend + "/frontend-check")
 		if err != nil {
 			log.Printf("Failed to connect to backend: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to backend"})
@@ -107,7 +92,7 @@ func main() {
 		api.GET("/healthz", healthzHandler)
 		api.DELETE("/todos/:id", func(c *gin.Context) {
 			id := c.Param("id")
-			resp, err := http.Get(config.Backend + "/todos/" + id)
+			resp, err := http.Get(backend + "/todos/" + id)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
 				return
@@ -136,7 +121,7 @@ func main() {
 		c.File("./build/index.html")
 	})
 
-	port := config.Port
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
@@ -146,95 +131,6 @@ func main() {
 	fmt.Println("*****************************\n")
 
 	r.Run(":" + port)
-}
-
-func getImage() {
-	resp, err := http.Get("https://picsum.photos/1200")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	filename := "tmp/kube/img.jpg"
-
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0644)
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	// Write the timestamp to the file
-	if _, err := io.Copy(file, resp.Body); err != nil {
-		fmt.Println("Error writing to file:", err)
-	}
-
-	fmt.Println("Image updated")
-}
-
-func readTimestamp() (string, error) {
-	var filename = "tmp/kube/timestamp.txt"
-	var timestamp string
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-	}
-	defer file.Close()
-
-	// Create a new scanner to read the file line by line
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		timestamp = scanner.Text()
-	}
-
-	// Check for errors during scanning
-	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading file:", err)
-	}
-
-	return timestamp, nil
-}
-
-func writeTimestamp() {
-	var filename = "tmp/kube/timestamp.txt"
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0644)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	timestamp := time.Now().Format(time.RFC3339)
-
-	file.Truncate(0)
-	file.Seek(0, 0)
-	// Write the timestamp to the file
-	if _, err := file.WriteString(timestamp + "\n"); err != nil {
-		fmt.Println("Error writing to file:", err)
-		return
-	}
-	fmt.Println("Timestamp written to file:", timestamp)
-}
-
-func checkTimestamp() bool {
-	timestamp, err1 := readTimestamp()
-	if err1 != nil {
-		fmt.Println("error reading timestamp")
-	}
-	t, err2 := time.Parse(time.RFC3339, timestamp)
-	if err2 != nil {
-		fmt.Println("error parsing timestamp")
-	}
-	return time.Since(t) > time.Hour
-}
-
-func startTimestampWatcher() {
-	fmt.Println("Starting timestamp observer")
-	for true {
-		if checkTimestamp() {
-			writeTimestamp()
-			getImage()
-		}
-		time.Sleep(1 * time.Hour)
-	}
 }
 
 type Todo struct {
