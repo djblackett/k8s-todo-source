@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"log"
 	"net/http"
@@ -53,8 +54,11 @@ if err != nil {
     p := ginprometheus.NewPrometheus("gin")
     p.Use(r)
 
+	var httpClient = &http.Client{Timeout: time.Second * 10}
+
+
 	todosHandler := func(c *gin.Context) {
-		resp, err := http.Get(config.Backend + "/todos")
+		resp, err := httpClient.Get(config.Backend + "/todos")
 		if err != nil {
 			log.Printf("Failed to fetch todos: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from remote server"})
@@ -79,7 +83,7 @@ if err != nil {
 	}
 
 	healthzHandler := func(c *gin.Context) {
-		resp, err := http.Get("http://" + config.Backend + "/frontend-check")
+		resp, err := httpClient.Get("http://" + config.Backend + "/frontend-check")
 		if err != nil {
 			log.Printf("Failed to connect to backend: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to backend"})
