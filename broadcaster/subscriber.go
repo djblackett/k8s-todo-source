@@ -1,40 +1,87 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gtuk/discordwebhook"
 	"github.com/nats-io/nats.go"
 )
 
+type Config struct {
+	WEBHOOK_URL *string
+	NATS_URL    string
+	PORT        string
+	ENVIRONMENT string
+	DELAY 	string
+	MAX_RETRIES int
+}
+
+func loadConfig() (Config, error) {
+	cfg := Config{
+		WEBHOOK_URL: nil,
+		NATS_URL:    os.Getenv("NATS_URL"),
+		PORT:        os.Getenv("PORT"),
+		ENVIRONMENT: os.Getenv("ENVIRONMENT"),
+		DELAY: os.Getenv("DELAY"),
+		MAX_RETRIES: 5,
+	}
+
+	if cfg.NATS_URL == "" {
+		return cfg, fmt.Errorf("NATS_URL environment variable is required")
+	}
+
+	if cfg.WEBHOOK_URL == nil && cfg.ENVIRONMENT == "production" {
+		return cfg, fmt.Errorf("WEBHOOK_URL environment variable is required in production")
+	
+	}
+
+	return cfg, nil
+}
 func main() {
+
+	config, err := loadConfig()
+
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
 	logger := log.New(os.Stdout, "[INFO] ", log.LstdFlags|log.Lshortfile)
 	errorLogger := log.New(os.Stderr, "[ERROR] ", log.LstdFlags|log.Lshortfile)
 
-	var environment = os.Getenv("ENVIRONMENT")
 
 	// Log application start
 	logger.Println("Starting the application...")
-	logger.Printf("Environment: %s", environment)
+	logger.Printf("Environment: %s", config.ENVIRONMENT)
 
 	// Connect to nats server
-	var natsUrl = os.Getenv("NATS_URL")
-	logger.Printf("NATS URL: %s", natsUrl)
+	logger.Printf("NATS URL: %s", config.NATS_URL)
 
 	var nc *nats.Conn
-	var err error
-	maxRetries := 5
+	maxRetries := config.MAX_RETRIES
+	// Parse MAX_RETRIES from config, default to 5 if not set
+	if maxRetries <= 0 {
+		maxRetries = 5 // Default to 5 retries if MAX_RETRIES is not set or invalid
+	}
+	
+	// Parse DELAY from config, default to 5 seconds if not set
+	delay, err := strconv.Atoi(config.DELAY)
+	if err != nil {
+		delay = 5 // Default to 5 seconds if DELAY is not set or invalid
+	}
+
 	for i := 0; i < maxRetries; i++ {
-		nc, err = nats.Connect(natsUrl)
+		nc, err = nats.Connect(config.NATS_URL)
 		if err == nil {
 			break
 		}
 		errorLogger.Printf("Failed to connect to NATS (attempt %d/%d): %v", i+1, maxRetries, err)
-		time.Sleep(5 * time.Second) // Wait for 5 seconds before retrying
+		time.Sleep(time.Duration(delay) * time.Second)
 	}
 
 	if err != nil {
@@ -50,27 +97,39 @@ func main() {
 		logger.Println("Shutting down application.")
 	}()
 
-	var content string
-	var username = "djblackett's bot"
 
-	var url = os.Getenv("WEBHOOK_URL")
+	
+	// Set up Gin router
 	r := gin.New()
+	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/healthz"},
+	}))
+	r.Use(gin.Recovery())
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
-	message := discordwebhook.Message{
-		Username: &username,
-		Content:  &content,
-	}
+	
 
 	// Simple Async Subscriber
 	_, err = nc.QueueSubscribe("broadcaster", "broadcast-workers", func(m *nats.Msg) {
     logger.Printf("Received a message on 'broadcaster': %s", string(m.Data))
-    content = string(m.Data)
+    content := string(m.Data)
 
-    if environment == "staging" {
+    if config.ENVIRONMENT == "staging" {
         logger.Printf("Logging message in staging: %s", content)
-    } else if environment == "production" {
+    } else if config.ENVIRONMENT == "production" {
         logger.Println("Sending message to Discord webhook.")
-        err := discordwebhook.SendMessage(url, message)
+		var username = "djblackett's bot"
+		message := discordwebhook.Message{
+		Username: &username,
+		Content:  &content,
+	}
+        err := discordwebhook.SendMessage(*config.WEBHOOK_URL, message)
         if err != nil {
             errorLogger.Printf("Failed to send message to Discord: %v", err)
         }
@@ -102,7 +161,7 @@ logger.Println("Subscription successfully established.")
 	// For liveness and readiness probes
 	r.GET("/healthz", func(c *gin.Context) {
 		if nc != nil && nc.Status() == nats.CONNECTED {
-			logger.Println("Health check passed: NATS is connected.")
+			// logger.Println("Health check passed: NATS is connected.")
 			c.Status(http.StatusOK)
 		} else {
 			errorLogger.Println("Health check failed: NATS is not connected.")
