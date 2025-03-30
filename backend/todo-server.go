@@ -127,6 +127,7 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 
+	// necessary for cloud environments
 	r.GET("/", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
@@ -148,14 +149,8 @@ func main() {
 	// Endpoint to update the order of todos
 	r.PUT("/todos/order", updateTodoOrder)
 
-	r.GET("/todos/:id", func(c *gin.Context) {
-		var todo Todo
-		if err := db.Where("id = ?", c.Param("id")).First(&todo).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"data": todo})
-	})
+	
+	r.GET("/todos/:id", getTodoByIdHandler)
 
 	r.POST("/todos", func(c *gin.Context) {
 	var newTodo Todo
@@ -252,13 +247,8 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": true})
 	})
 
-	r.DELETE("/todos/completed", func(c *gin.Context) {
-		if err := db.Where("completed = ?", true).Delete(&Todo{}).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"data": true})
-	})
+	
+	r.DELETE("/todos/completed", deleteCompletedTodosHandler)
 
 
 	r.GET("/healthz", func(c *gin.Context) {
@@ -279,6 +269,23 @@ func main() {
 	r.Run("0.0.0.0:" + port)
 
 }
+
+func getTodoByIdHandler(c *gin.Context) {
+		var todo Todo
+		if err := db.Where("id = ?", c.Param("id")).First(&todo).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": todo})
+	}
+
+	func deleteCompletedTodosHandler(c *gin.Context) {
+		if err := db.Where("completed = ?", true).Delete(&Todo{}).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": true})
+	}
 
 type Todo struct {
 	Id        string    `json:"id"`
