@@ -15,31 +15,47 @@ import (
 )
 
 type Config struct {
-	WEBHOOK_URL *string
+	WEBHOOK_URL string
 	NATS_URL    string
 	PORT        string
 	ENVIRONMENT string
 	DELAY 	string
-	MAX_RETRIES int
+	MAX_RETRIES string
 }
 
 func loadConfig() (Config, error) {
 	cfg := Config{
-		WEBHOOK_URL: nil,
+		WEBHOOK_URL: os.Getenv("WEBHOOK_URL"),
 		NATS_URL:    os.Getenv("NATS_URL"),
 		PORT:        os.Getenv("PORT"),
 		ENVIRONMENT: os.Getenv("ENVIRONMENT"),
 		DELAY: os.Getenv("DELAY"),
-		MAX_RETRIES: 5,
+		MAX_RETRIES: os.Getenv("MAX_RETRIES"),
 	}
 
 	if cfg.NATS_URL == "" {
 		return cfg, fmt.Errorf("NATS_URL environment variable is required")
 	}
 
-	if cfg.WEBHOOK_URL == nil && cfg.ENVIRONMENT == "production" {
+	if cfg.WEBHOOK_URL == "" && cfg.ENVIRONMENT == "production" {
 		return cfg, fmt.Errorf("WEBHOOK_URL environment variable is required in production")
 	
+	}
+
+	if cfg.DELAY == "" {
+		cfg.DELAY = "5" // Default to 5 seconds if DELAY is not set
+	}
+
+	if cfg.MAX_RETRIES == "" {
+		cfg.MAX_RETRIES = "5" // Default to 5 retries if MAX_RETRIES is not set
+	}
+
+	if cfg.ENVIRONMENT == "" {
+		return cfg, fmt.Errorf("ENVIRONMENT environment variable is required")
+	}
+
+	if cfg.PORT == "" {
+		cfg.PORT = "8888" // Default to port 8080 if PORT is not set
 	}
 
 	return cfg, nil
@@ -63,17 +79,16 @@ func main() {
 	logger.Printf("NATS URL: %s", config.NATS_URL)
 
 	var nc *nats.Conn
-	maxRetries := config.MAX_RETRIES
-	// Parse MAX_RETRIES from config, default to 5 if not set
-	if maxRetries <= 0 {
+	maxRetries, err := strconv.Atoi(config.MAX_RETRIES)
+
+	if err != nil || maxRetries <= 0 {
 		maxRetries = 5 // Default to 5 retries if MAX_RETRIES is not set or invalid
+		logger.Printf("Invalid MAX_RETRIES value, defaulting to %d: %v", maxRetries, err)
 	}
 	
 	// Parse DELAY from config, default to 5 seconds if not set
 	delay, err := strconv.Atoi(config.DELAY)
-	if err != nil {
-		delay = 5 // Default to 5 seconds if DELAY is not set or invalid
-	}
+	
 
 	for i := 0; i < maxRetries; i++ {
 		nc, err = nats.Connect(config.NATS_URL)
@@ -104,6 +119,7 @@ func main() {
 	r.Use(gin.LoggerWithConfig(gin.LoggerConfig{
 		SkipPaths: []string{"/healthz"},
 	}))
+
 	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
@@ -113,7 +129,6 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	
 
 	// Simple Async Subscriber
 	_, err = nc.QueueSubscribe("broadcaster", "broadcast-workers", func(m *nats.Msg) {
@@ -129,7 +144,7 @@ func main() {
 		Username: &username,
 		Content:  &content,
 	}
-        err := discordwebhook.SendMessage(*config.WEBHOOK_URL, message)
+        err := discordwebhook.SendMessage(config.WEBHOOK_URL, message)
         if err != nil {
             errorLogger.Printf("Failed to send message to Discord: %v", err)
         }
@@ -169,11 +184,8 @@ logger.Println("Subscription successfully established.")
 		}
 	})
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8500"
-	}
 
-	logger.Printf("Starting HTTP server on port %s", port)
-	r.Run(":" + port)
+	
+	logger.Printf("Starting HTTP server on port %s", config.PORT)
+	r.Run(":" + config.PORT)
 }
